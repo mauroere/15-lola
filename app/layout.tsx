@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "@fontsource/cinzel-decorative/latin-400.css";
-import "@fontsource/pinyon-script/latin-400.css";
+import "@fontsource/unifrakturmaguntia/latin-400.css";
 import "@fontsource/cormorant-garamond/latin-400.css";
 import "@fontsource/cormorant-garamond/latin-400-italic.css";
 import "@fontsource/cormorant-garamond/latin-500.css";
@@ -21,14 +21,14 @@ export const metadata: Metadata = {
   icons: { icon: "/icon.svg" },
   robots: { index: false, follow: false },
   openGraph: {
-    title: "Mis quince · Una noche para recordar",
-    description: "Una noche para recordar. Muy pronto, todos los detalles.",
+    title: `${event.name} · Mis XV · ${event.dateShort}`,
+    description: `${event.dateLabel}. Una noche para recordar.`,
     type: "website",
     locale: "es_AR",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mis quince · Una noche para recordar",
+    title: `${event.name} · Mis XV · ${event.dateShort}`,
   },
 };
 export default function RootLayout({

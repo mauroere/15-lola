@@ -1,6 +1,7 @@
 import { chromium, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import assert from "node:assert/strict";
+const baseUrl = process.env.INVITATION_TEST_URL || "http://127.0.0.1:3030";
 const browser = await chromium.launch({
   executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || undefined,
   args: ["--no-sandbox"],
@@ -22,7 +23,7 @@ try {
   });
   for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: width > 768 ? 1080 : 844 });
-    await page.goto("http://127.0.0.1:3030", { waitUntil: "networkidle" });
+    await page.goto(baseUrl, { waitUntil: "networkidle" });
     await page.evaluate(() => document.fonts.ready);
     assert.equal(
       await page.locator("#hero-title").evaluate((el) => {
@@ -42,9 +43,7 @@ try {
       `Overflow at ${width}px`,
     );
     assert.equal(
-      await page
-        .getByRole("heading", { name: "Tu nombre", exact: true })
-        .count(),
+      await page.getByRole("heading", { name: "Lola", exact: true }).count(),
       1,
     );
     assert.equal(
@@ -61,8 +60,15 @@ try {
           .count(),
         1,
       );
-    assert.equal(await page.locator('a[href="/api/calendar"]').count(), 0);
-    assert.equal(await page.locator("time").count(), 0);
+    assert.equal(await page.locator('a[href="/api/calendar"]').count(), 1);
+    await expect(page.locator("time")).toHaveAttribute(
+      "datetime",
+      "2027-02-07",
+    );
+    await expect(page.locator("#hero-title")).toHaveCSS(
+      "font-family",
+      /UnifrakturMaguntia/,
+    );
     assert.equal(await page.locator("form").count(), 0);
     assert.equal(
       await page
@@ -74,17 +80,17 @@ try {
     );
     if (width === 390) {
       await page.screenshot({
-        path: "/tmp/xv-medieval-mobile.png",
+        path: "/tmp/lola-medieval-mobile.png",
         fullPage: true,
       });
-      await page.screenshot({ path: "/tmp/xv-medieval-mobile-portada.png" });
+      await page.screenshot({ path: "/tmp/lola-medieval-mobile-portada.png" });
     }
     if (width === 1440) {
       await page.screenshot({
-        path: "/tmp/xv-medieval-desktop.png",
+        path: "/tmp/lola-medieval-desktop.png",
         fullPage: true,
       });
-      await page.screenshot({ path: "/tmp/xv-medieval-portada.png" });
+      await page.screenshot({ path: "/tmp/lola-medieval-portada.png" });
     }
     const result = await new AxeBuilder({ page }).analyze();
     assert.deepEqual(
@@ -103,21 +109,24 @@ try {
   await expect(page.getByRole("status")).toHaveText("Enlace copiado.");
   assert.equal(
     await page.evaluate(() => navigator.clipboard.readText()),
-    "http://127.0.0.1:3030/",
+    `${baseUrl}/`,
   );
-  const calendar = await page.request.get("http://127.0.0.1:3030/api/calendar");
-  assert.equal(
-    calendar.status(),
-    404,
-    "Unknown dates must never create a false calendar event",
-  );
-  const og = await page.request.get("http://127.0.0.1:3030/opengraph-image");
+  const calendar = await page.request.get(`${baseUrl}/api/calendar`);
+  assert.equal(calendar.status(), 200);
+  const calendarText = await calendar.text();
+  assert.match(calendarText, /DTSTART;VALUE=DATE:20270207/);
+  assert.match(calendarText, /DTEND;VALUE=DATE:20270208/);
+  assert.match(calendarText, /SUMMARY:Los XV de Lola/);
+  assert.doesNotMatch(calendarText, /DTSTART[^\r\n]*T[0-9]/);
+  for (const line of calendarText.split("\r\n"))
+    assert(Buffer.byteLength(line, "utf8") <= 75);
+  const og = await page.request.get(`${baseUrl}/opengraph-image`);
   assert.equal(og.status(), 200);
   assert.match(og.headers()["content-type"], /image\/png/);
   assert.deepEqual(errors, []);
   assert.deepEqual(failedResources, []);
   console.log(
-    "Navigation, sharing, unconfirmed calendar, social preview and browser errors OK",
+    "Navigation, sharing, confirmed date calendar, social preview and browser errors OK",
   );
 } finally {
   await browser.close();

@@ -9,8 +9,7 @@
   --silver-light: #ded9d1;
   --line: #c5bdb2;
   --serif: "Cormorant Garamond", Georgia, serif;
-  --script: "Pinyon Script", cursive;
-  --gothic: "Cinzel Decorative", Georgia, serif;
+  --gothic: "UnifrakturMaguntia", Georgia, serif;
   --sans: "Montserrat", Arial, sans-serif;
 }
 * {
@@ -96,7 +95,7 @@ img {
   gap: 15px;
 }
 .wordmark-letter {
-  font: 45px var(--script);
+  font: 45px var(--gothic);
   color: var(--wine);
   border-right: 1px solid var(--line);
   padding-right: 20px;
@@ -270,7 +269,7 @@ img {
   padding: 0 26px 20px;
 }
 .name-lockup h1 {
-  font: clamp(120px, 15vw, 210px)/1.2 var(--script);
+  font: clamp(120px, 15vw, 210px)/1.2 var(--gothic);
   color: var(--wine);
   font-weight: 400;
   letter-spacing: -5px;
@@ -448,7 +447,7 @@ h2 em {
   height: 100%;
 }
 .crest > span {
-  font: 45px/1 var(--script);
+  font: 45px/1 var(--gothic);
   position: absolute;
   inset: 0;
   display: grid;
@@ -500,7 +499,7 @@ h2 em {
   font-weight: 400;
 }
 .quote-signature {
-  font: 33px var(--script);
+  font: 33px var(--gothic);
   color: var(--muted);
 }
 .dress-section {
@@ -617,7 +616,7 @@ h2 em {
   color: var(--muted);
 }
 .closing h2 {
-  font: 100px/1.2 var(--script);
+  font: 100px/1.2 var(--gothic);
   color: var(--wine);
   letter-spacing: -2px;
 }
@@ -663,7 +662,7 @@ h2 em {
   gap: 20px;
 }
 .footer-monogram {
-  font: 45px/1 var(--script);
+  font: 45px/1 var(--gothic);
   color: var(--wine);
   justify-self: start;
 }
@@ -1033,7 +1032,7 @@ h2 em {
     animation: none !important;
   }
 }
-/* Generic event data stays readable until the family supplies the final details. */
+/* Monograms and long names. */
 .wordmark-letter,
 .footer-monogram {
   font: 24px var(--gothic);
@@ -1091,5 +1090,310 @@ h2 em {
   }
   .site-header nav a {
     font-size: 7px;
+  }
+}
+
+/* Silver heraldry and Gothic manuscript details. */
+.gothic-arch {
+  position: absolute;
+  width: 390px;
+  height: 625px;
+  max-width: 88%;
+  left: 50%;
+  top: 49%;
+  transform: translate(-50%, -50%);
+  color: #9e9288;
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-crown {
+  width: 68px;
+  height: 39px;
+  color: #91877f;
+  margin-bottom: 17px;
+}
+.hero-eyebrow {
+  margin-bottom: 22px;
+}
+.save-date {
+  font-size: 68px;
+  letter-spacing: 0;
+  line-height: 0.95;
+}
+.save-date span {
+  font: 400 44px/1.12 var(--gothic);
+  margin-top: 4px;
+}
+.hero-flourish {
+  width: 265px;
+  height: 29px;
+  margin: 22px 0 10px;
+}
+.name-lockup {
+  padding-bottom: 9px;
+}
+.name-lockup h1 {
+  font-size: 178px;
+  line-height: 1.15;
+  letter-spacing: 0;
+  transform: none;
+  text-shadow: 0 1px 0 #fff8;
+}
+.name-lockup > p {
+  font-family: "Cinzel Decorative", Georgia, serif;
+  font-size: 17px;
+  letter-spacing: 2px;
+  margin: 8px 0 0;
+}
+.name-lockup > p span {
+  font-size: 23px;
+}
+.date {
+  margin-top: 21px;
+  letter-spacing: 4px;
+}
+.hero-invite {
+  margin-top: 27px;
+}
+.pennant {
+  position: absolute;
+  left: 102px;
+  top: 15px;
+  width: 57px;
+  height: 105px;
+  color: var(--silver-light);
+  z-index: 1;
+  pointer-events: none;
+}
+.pennant svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(1px 3px 2px #350b1a22);
+}
+.pennant > span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 31px;
+  text-align: center;
+  font:
+    17px "Cinzel Decorative",
+    serif;
+  letter-spacing: 1px;
+}
+h2 {
+  font-family: var(--gothic);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+h2 em {
+  font-style: normal;
+}
+.chapter,
+.year {
+  font-family: "Cinzel Decorative", Georgia, serif;
+}
+.section-intro h2 {
+  font-size: 59px;
+}
+.story-card h3 {
+  font-family: var(--gothic);
+  font-size: 37px;
+}
+.story-card h3 em {
+  font-style: normal;
+}
+.royal-crest {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.royal-crest > svg {
+  width: 54px;
+  height: 31px;
+  margin-bottom: -5px;
+  color: var(--silver-light);
+}
+.royal-crest .crest {
+  width: 76px;
+  height: 85px;
+}
+.royal-crest .crest > span {
+  font: 43px var(--gothic);
+  padding-bottom: 2px;
+}
+.quote-signature {
+  font-size: 26px;
+}
+.dress-heading h2 {
+  font-size: 52px;
+  line-height: 1.12;
+}
+.dress-card h3 {
+  font: 400 42px/1.2 var(--gothic);
+}
+.closing > .castle {
+  width: 130px;
+  height: 74px;
+  color: #9d9489;
+  margin: 0 auto 20px;
+}
+.closing h2 {
+  font: 400 88px/1.2 var(--gothic);
+  letter-spacing: 0;
+}
+.wordmark-letter,
+.footer-monogram {
+  font-family: "Cinzel Decorative", Georgia, serif;
+}
+@media (max-width: 900px) {
+  .pennant {
+    left: 75px;
+    width: 46px;
+    height: 85px;
+    top: 11px;
+  }
+  .pennant > span {
+    top: 26px;
+    font-size: 14px;
+  }
+  .name-lockup h1 {
+    font-size: 150px;
+  }
+  .dress-heading h2 {
+    font-size: 44px;
+  }
+}
+@media (max-width: 600px) {
+  .gothic-arch {
+    width: 310px;
+    height: 530px;
+    top: 49%;
+    opacity: 0.23;
+  }
+  .hero-content {
+    padding-top: 60px;
+    padding-bottom: 62px;
+  }
+  .hero-crown {
+    width: 54px;
+    height: 31px;
+    margin-bottom: 16px;
+  }
+  .hero-eyebrow {
+    font-size: 7px;
+    letter-spacing: 1.5px;
+    margin-bottom: 22px;
+  }
+  .save-date {
+    font-size: 51px;
+  }
+  .save-date span {
+    font-size: 36px;
+  }
+  .hero-flourish {
+    width: 220px;
+    height: 24px;
+    margin: 18px 0 7px;
+  }
+  .name-lockup {
+    min-width: 0;
+    padding: 0 6px 5px;
+  }
+  .name-lockup h1 {
+    font-size: 120px;
+    letter-spacing: 0;
+  }
+  .name-lockup > p {
+    font-size: 14px;
+    margin: 12px 0 0;
+  }
+  .name-lockup > p span {
+    font-size: 19px;
+  }
+  .date {
+    font-size: 9px;
+    letter-spacing: 2.6px;
+    margin-top: 22px;
+  }
+  .hero-invite {
+    margin-top: 27px;
+    font-size: 16px;
+  }
+  .pennant {
+    left: 55px;
+    top: 11px;
+    width: 38px;
+    height: 71px;
+  }
+  .pennant > span {
+    font-size: 11px;
+    top: 22px;
+  }
+  .section-intro h2 {
+    font-size: 44px;
+  }
+  .dress-heading h2 {
+    font-size: 42px;
+  }
+  .closing h2 {
+    font-size: 68px;
+  }
+  .quote-signature {
+    font-size: 23px;
+  }
+  .chapter {
+    font-size: 8px;
+    letter-spacing: 1.3px;
+  }
+  .closing > .castle {
+    width: 110px;
+    height: 62px;
+  }
+}
+@media (max-width: 350px) {
+  .name-lockup h1 {
+    font-size: 108px;
+  }
+  .pennant {
+    left: 52px;
+    width: 32px;
+    height: 60px;
+  }
+  .pennant > span {
+    font-size: 9px;
+    top: 18px;
+  }
+  .hero-content {
+    padding-top: 55px;
+    padding-bottom: 55px;
+  }
+  .hero-crown {
+    width: 48px;
+    height: 27px;
+    margin-bottom: 14px;
+  }
+  .hero-eyebrow {
+    font-size: 6px;
+    letter-spacing: 1.3px;
+  }
+  .save-date {
+    font-size: 47px;
+  }
+  .save-date span {
+    font-size: 33px;
+  }
+  .gothic-arch {
+    height: 510px;
+  }
+  .section-intro h2 {
+    font-size: 39px;
+  }
+  .dress-heading h2 {
+    font-size: 39px;
+  }
+  .closing h2 {
+    font-size: 61px;
   }
 }

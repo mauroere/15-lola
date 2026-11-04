@@ -1,5 +1,15 @@
 import { event } from "@/lib/event";
-import { Corner, Crest, Flourish, Star } from "@/components/Ornaments";
+import {
+  Corner,
+  Crest,
+  Flourish,
+  Star,
+  Crown,
+  QuillArrow,
+  GothicArch,
+  Pennant,
+  Castle,
+} from "@/components/Ornaments";
 import ShareButton from "@/components/ShareButton";
 export default function Page() {
   const date = event.date ? new Date(`${event.date}T12:00:00Z`) : null;
@@ -25,7 +35,9 @@ export default function Page() {
       <header className="site-header">
         <a href="#inicio" className="wordmark">
           <span className="wordmark-letter">XV</span>
-          <span>UNA NOCHE ÚNICA</span>
+          <span>
+            LOLA <i>·</i> MIS XV
+          </span>
         </a>
         <nav aria-label="Navegación principal">
           <a href="#celebracion">La celebración</a>
@@ -42,6 +54,8 @@ export default function Page() {
             <Star className="frame-star star-top" />
             <Star className="frame-star star-bottom" />
           </div>
+          <GothicArch />
+          <Pennant />
           <img
             className="roses roses-top"
             src="/art/burgundy-roses.webp"
@@ -58,11 +72,12 @@ export default function Page() {
             height="1005"
           />
           <div className="hero-content">
+            <Crown className="hero-crown" />
             <p className="eyebrow hero-eyebrow">Una noche. Mil recuerdos.</p>
             <p className="save-date">
               Save <span>the date</span>
             </p>
-            <Flourish className="hero-flourish" />
+            <QuillArrow className="hero-flourish" />
             <div className="name-lockup">
               <h1
                 id="hero-title"
@@ -129,7 +144,10 @@ export default function Page() {
               )}
             </article>
             <article className="story-card">
-              <Crest />
+              <div className="royal-crest">
+                <Crown />
+                <Crest>{event.name.charAt(0)}</Crest>
+              </div>
               <p className="eyebrow">LA NOCHE NOS ESPERA</p>
               {event.venue ? (
                 <>
@@ -238,6 +256,7 @@ export default function Page() {
           </div>
         </section>
         <section className="closing">
+          <Castle />
           <Flourish />
           <p className="eyebrow">EL PRÓXIMO CAPÍTULO LO ESCRIBIMOS JUNTOS</p>
           <h2>Te espero.</h2>
@@ -254,7 +273,7 @@ export default function Page() {
           XV
         </a>
         <p>
-          MIS QUINCE <span>·</span> UNA NOCHE ÚNICA
+          {event.name.toUpperCase()} <span>·</span> MIS XV <span>·</span> 2027
         </p>
         <a href="#inicio" className="back-top">
           Volver arriba <span aria-hidden="true">↑</span>

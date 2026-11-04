@@ -4,7 +4,7 @@ import path from "node:path";
 import { event } from "@/lib/event";
 export const runtime = "nodejs";
 export const alt =
-  "Mis quince. Invitación medieval en beige, bordó y plateado.";
+  "Lola. Mis quince, 7 de febrero de 2027. Invitación medieval en beige, bordó y plateado.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export default async function Image() {
@@ -18,7 +18,7 @@ export default async function Image() {
     readFile(
       path.join(
         process.cwd(),
-        "node_modules/@fontsource/pinyon-script/files/pinyon-script-latin-400-normal.woff",
+        "node_modules/@fontsource/unifrakturmaguntia/files/unifrakturmaguntia-latin-400-normal.woff",
       ),
     ),
     readFile(path.join(process.cwd(), "public/art/burgundy-roses.webp")),
@@ -82,7 +82,7 @@ export default async function Image() {
         <span style={{ fontFamily: "Serif", fontSize: 24, letterSpacing: 9 }}>
           MIS QUINCE AÑOS
         </span>
-        <span style={{ fontFamily: "Script", fontSize: 140, marginTop: 10 }}>
+        <span style={{ fontFamily: "Medieval", fontSize: 140, marginTop: 10 }}>
           {event.name}
         </span>
         <div
@@ -104,7 +104,7 @@ export default async function Image() {
       ...size,
       fonts: [
         { name: "Serif", data: serif, weight: 400 },
-        { name: "Script", data: script, weight: 400 },
+        { name: "Medieval", data: script, weight: 400 },
       ],
     },
   );
