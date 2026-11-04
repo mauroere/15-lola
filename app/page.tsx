@@ -5,7 +5,6 @@ import {
   Star,
   QuillArrow,
   GothicArch,
-  Pennant,
 } from "@/components/Ornaments";
 import BrandLogo from "@/components/BrandLogo";
 import ShareButton from "@/components/ShareButton";
@@ -53,7 +52,6 @@ export default function Page() {
             <Star className="frame-star star-bottom" />
           </div>
           <GothicArch />
-          <Pennant />
           <img
             className="roses roses-top"
             src="/art/burgundy-roses.webp"
@@ -70,7 +68,6 @@ export default function Page() {
             height="1005"
           />
           <div className="hero-content">
-            <BrandLogo className="hero-brand" />
             <p className="eyebrow hero-eyebrow">Una noche. Mil recuerdos.</p>
             <p className="save-date">
               Save <span>the date</span>

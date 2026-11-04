@@ -1,6 +1,6 @@
 # Invitación XV · Medieval
 
-Landing independiente con estética antigua/medieval: beige, bordó y detalles plateados, rosas, letras góticas UnifrakturMaguntia, arco ojival, logotipo de escudo con corona y letra L, estandarte y flecha ornamental. No contiene datos, claves, fotografías ni conexiones de Barbi o Luz.
+Landing independiente con estética antigua/medieval: beige, bordó y detalles plateados, rosas, letras góticas UnifrakturMaguntia, arco ojival, logotipo de escudo con corona y letra L, flecha ornamental. No contiene datos, claves, fotografías ni conexiones de Barbi o Luz.
 
 ## Datos y alcance
 
@@ -13,7 +13,7 @@ La configuración está en `lib/event.ts`. Sin fecha, el botón de calendario se
 
 ## Logotipo
 
-`public/brand/lola-escudo.svg` es el único original vectorial: escudo con corona y letra L gótica convertida a trazos. No depende de fuentes para verse bien. `BrandLogo` lo reutiliza en cabecera, portada, estandarte, celebración, cierre y pie, con una versión plateada sobre bordó. También se usa para el favicon y la imagen social. `/icon.svg` conserva compatibilidad y sirve ese mismo archivo. No hay un logotipo alternativo ni un castillo.
+`public/brand/lola-escudo.svg` es el único original vectorial: escudo con corona y letra L gótica convertida a trazos. No depende de fuentes para verse bien. `BrandLogo` lo reutiliza en cabecera, celebración, cierre y pie, con una versión plateada sobre bordó. En la vista inicial se muestra una sola vez, en la cabecera. También se usa para el favicon y la imagen social. `/icon.svg` conserva compatibilidad y sirve ese mismo archivo. No hay un logotipo alternativo ni un castillo.
 
 ## Desarrollo
 

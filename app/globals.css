@@ -1104,21 +1104,6 @@ h2 em {
 .hero-invite {
   margin-top: 27px;
 }
-.pennant {
-  position: absolute;
-  left: 102px;
-  top: 15px;
-  width: 57px;
-  height: 105px;
-  color: var(--silver-light);
-  z-index: 1;
-  pointer-events: none;
-}
-.pennant svg {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(1px 3px 2px #350b1a22);
-}
 h2 {
   font-family: var(--gothic);
   font-weight: 400;
@@ -1156,12 +1141,6 @@ h2 em {
   letter-spacing: 0;
 }
 @media (max-width: 900px) {
-  .pennant {
-    left: 75px;
-    width: 46px;
-    height: 85px;
-    top: 11px;
-  }
   .name-lockup h1 {
     font-size: 150px;
   }
@@ -1220,12 +1199,6 @@ h2 em {
     margin-top: 27px;
     font-size: 16px;
   }
-  .pennant {
-    left: 55px;
-    top: 11px;
-    width: 38px;
-    height: 71px;
-  }
   .section-intro h2 {
     font-size: 44px;
   }
@@ -1246,11 +1219,6 @@ h2 em {
 @media (max-width: 350px) {
   .name-lockup h1 {
     font-size: 108px;
-  }
-  .pennant {
-    left: 52px;
-    width: 32px;
-    height: 60px;
   }
   .hero-content {
     padding-top: 55px;
@@ -1295,10 +1263,6 @@ h2 em {
 .wordmark > .brand-logo {
   width: 35px;
 }
-.hero-brand {
-  width: 63px;
-  margin-bottom: 15px;
-}
 .story-brand {
   width: 73px;
   margin-bottom: 0;
@@ -1315,21 +1279,9 @@ h2 em {
 .footer-monogram > .brand-logo {
   width: 34px;
 }
-.pennant > .brand-logo {
-  position: absolute;
-  top: 13%;
-  left: 17%;
-  width: 66%;
-  height: auto;
-  max-width: none;
-}
 @media (max-width: 600px) {
   .wordmark > .brand-logo {
     width: 28px;
-  }
-  .hero-brand {
-    width: 51px;
-    margin-bottom: 13px;
   }
   .story-brand {
     width: 67px;
@@ -1343,10 +1295,6 @@ h2 em {
   }
 }
 @media (max-width: 350px) {
-  .hero-brand {
-    width: 46px;
-    margin-bottom: 12px;
-  }
   .wordmark > .brand-logo {
     width: 25px;
   }

@@ -1,5 +1,3 @@
-import BrandLogo from "./BrandLogo";
-
 export function Flourish({ className = "" }: { className?: string }) {
   return (
     <svg
@@ -106,26 +104,5 @@ export function GothicArch() {
       />
       <path d="m180 108 6 9-6 9-6-9 6-9Z" fill="currentColor" />
     </svg>
-  );
-}
-export function Pennant() {
-  return (
-    <div className="pennant" aria-hidden="true">
-      <svg viewBox="0 0 64 118" fill="none">
-        <path
-          d="M5 1h54v112L32 96 5 113V1Z"
-          fill="var(--wine)"
-          stroke="currentColor"
-        />
-        <path
-          d="M11 7h42v95L32 89l-21 13V7Z"
-          stroke="currentColor"
-          strokeWidth=".6"
-        />
-        <path d="M1 1h62M1 5h62" stroke="currentColor" strokeWidth=".8" />
-        <path d="m32 73 3 5-3 5-3-5 3-5Z" fill="currentColor" />
-      </svg>
-      <BrandLogo className="pennant-logo" tone="silver" decorative />
-    </div>
   );
 }
