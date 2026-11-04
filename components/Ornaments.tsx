@@ -1,3 +1,5 @@
+import BrandLogo from "./BrandLogo";
+
 export function Flourish({ className = "" }: { className?: string }) {
   return (
     <svg
@@ -62,60 +64,6 @@ export function Star({ className = "" }: { className?: string }) {
     </svg>
   );
 }
-export function Crest({
-  children,
-  className = "",
-}: {
-  children?: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={`crest ${className}`}>
-      <svg viewBox="0 0 100 118" fill="none" aria-hidden="true">
-        <path
-          d="M50 5c14 13 29 16 40 15v47c0 24-23 36-40 47-17-11-40-23-40-47V20c11 1 26-2 40-15Z"
-          stroke="currentColor"
-        />
-        <path
-          d="M50 13c11 10 23 13 33 13v40c0 19-17 30-33 40-16-10-33-21-33-40V26c10 0 22-3 33-13Z"
-          stroke="currentColor"
-          strokeWidth=".5"
-        />
-        <path d="M35 21h30M35 90h30" stroke="currentColor" strokeWidth=".5" />
-      </svg>
-      <span>{children || "XV"}</span>
-    </div>
-  );
-}
-
-export function Crown({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 100 56"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M15 18 28 31 38 13 50 29 62 13 72 31 85 18 77 44H23L15 18Z"
-        stroke="currentColor"
-        strokeWidth="1.1"
-      />
-      <path
-        d="M25 49h50M27 53h46M21 38h58M38 13l5 25m19-25-5 25M50 29v9"
-        stroke="currentColor"
-        strokeWidth=".8"
-      />
-      <path
-        d="m50 1 3 5-3 5-3-5 3-5ZM38 8l2 3-2 3-2-3 2-3Zm24 0 2 3-2 3-2-3 2-3Z"
-        fill="currentColor"
-      />
-      <circle cx="14" cy="16" r="2" stroke="currentColor" />
-      <circle cx="86" cy="16" r="2" stroke="currentColor" />
-      <path d="m50 34 3 3-3 3-3-3 3-3Z" fill="currentColor" />
-    </svg>
-  );
-}
 export function QuillArrow({ className = "" }: { className?: string }) {
   return (
     <svg
@@ -174,30 +122,10 @@ export function Pennant() {
           stroke="currentColor"
           strokeWidth=".6"
         />
-        <path
-          d="M1 1h62M1 5h62M17 20h30M17 69h30"
-          stroke="currentColor"
-          strokeWidth=".8"
-        />
+        <path d="M1 1h62M1 5h62" stroke="currentColor" strokeWidth=".8" />
         <path d="m32 73 3 5-3 5-3-5 3-5Z" fill="currentColor" />
       </svg>
-      <span>XV</span>
+      <BrandLogo className="pennant-logo" tone="silver" decorative />
     </div>
-  );
-}
-export function Castle() {
-  return (
-    <svg
-      className="castle"
-      viewBox="0 0 200 112"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M16 106h168M30 106V49h-6V33h8v8h8v-8h8v8h8v-8h8v16h-6v57m0-36h84m-66 36V54l-6-2 30-25 30 25-6 2v52m0-36h18m0 36V49h-6V33h8v8h8v-8h8v8h8v-8h8v16h-6v57M100 27V5l19 7-19 7M91 106V84a9 9 0 0 1 18 0v22M38 64v10m12-10v10m100-10v10m12-10v10M95 55v9m10-9v9M76 75h8m32 0h8M32 91h8m10 8h8m84-8h8m12 8h8"
-        stroke="currentColor"
-        strokeWidth="1"
-      />
-    </svg>
   );
 }

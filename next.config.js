@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
+  async rewrites() {
+    return [{ source: "/icon.svg", destination: "/brand/lola-escudo.svg" }];
+  },
   async headers() {
     return [
       {

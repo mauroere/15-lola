@@ -1,15 +1,13 @@
 import { event } from "@/lib/event";
 import {
   Corner,
-  Crest,
   Flourish,
   Star,
-  Crown,
   QuillArrow,
   GothicArch,
   Pennant,
-  Castle,
 } from "@/components/Ornaments";
+import BrandLogo from "@/components/BrandLogo";
 import ShareButton from "@/components/ShareButton";
 export default function Page() {
   const date = event.date ? new Date(`${event.date}T12:00:00Z`) : null;
@@ -34,7 +32,7 @@ export default function Page() {
       </a>
       <header className="site-header">
         <a href="#inicio" className="wordmark">
-          <span className="wordmark-letter">XV</span>
+          <BrandLogo decorative />
           <span>
             LOLA <i>·</i> MIS XV
           </span>
@@ -72,7 +70,7 @@ export default function Page() {
             height="1005"
           />
           <div className="hero-content">
-            <Crown className="hero-crown" />
+            <BrandLogo className="hero-brand" />
             <p className="eyebrow hero-eyebrow">Una noche. Mil recuerdos.</p>
             <p className="save-date">
               Save <span>the date</span>
@@ -144,10 +142,7 @@ export default function Page() {
               )}
             </article>
             <article className="story-card">
-              <div className="royal-crest">
-                <Crown />
-                <Crest>{event.name.charAt(0)}</Crest>
-              </div>
+              <BrandLogo className="story-brand" tone="silver" />
               <p className="eyebrow">LA NOCHE NOS ESPERA</p>
               {event.venue ? (
                 <>
@@ -256,7 +251,7 @@ export default function Page() {
           </div>
         </section>
         <section className="closing">
-          <Castle />
+          <BrandLogo className="closing-brand" />
           <Flourish />
           <p className="eyebrow">EL PRÓXIMO CAPÍTULO LO ESCRIBIMOS JUNTOS</p>
           <h2>Te espero.</h2>
@@ -268,9 +263,9 @@ export default function Page() {
         <a
           href="#inicio"
           className="footer-monogram"
-          aria-label="XV, volver al comienzo"
+          aria-label="Volver al comienzo de la invitación de Lola"
         >
-          XV
+          <BrandLogo decorative />
         </a>
         <p>
           {event.name.toUpperCase()} <span>·</span> MIS XV <span>·</span> 2027

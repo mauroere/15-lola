@@ -8,7 +8,7 @@ export const alt =
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export default async function Image() {
-  const [serif, script, roses] = await Promise.all([
+  const [serif, script, roses, logo] = await Promise.all([
     readFile(
       path.join(
         process.cwd(),
@@ -22,8 +22,10 @@ export default async function Image() {
       ),
     ),
     readFile(path.join(process.cwd(), "public/art/burgundy-roses.webp")),
+    readFile(path.join(process.cwd(), "public/brand/lola-escudo.svg")),
   ]);
   const floral = `data:image/webp;base64,${roses.toString("base64")}`;
+  const crest = `data:image/svg+xml;base64,${logo.toString("base64")}`;
   return new ImageResponse(
     <div
       style={{
@@ -79,10 +81,17 @@ export default async function Image() {
           alignItems: "center",
         }}
       >
+        <img
+          src={crest}
+          width={68}
+          height={96}
+          alt=""
+          style={{ marginBottom: 16 }}
+        />
         <span style={{ fontFamily: "Serif", fontSize: 24, letterSpacing: 9 }}>
           MIS QUINCE AÑOS
         </span>
-        <span style={{ fontFamily: "Medieval", fontSize: 140, marginTop: 10 }}>
+        <span style={{ fontFamily: "Medieval", fontSize: 120, marginTop: 10 }}>
           {event.name}
         </span>
         <div

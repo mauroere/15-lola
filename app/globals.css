@@ -94,13 +94,6 @@ img {
   align-items: center;
   gap: 15px;
 }
-.wordmark-letter {
-  font: 45px var(--gothic);
-  color: var(--wine);
-  border-right: 1px solid var(--line);
-  padding-right: 20px;
-  line-height: 1;
-}
 .wordmark > span:last-child {
   font: 9px var(--sans);
   letter-spacing: 2.4px;
@@ -436,25 +429,6 @@ h2 em {
   padding: 35px 25px;
   text-align: center;
 }
-.crest {
-  width: 64px;
-  height: 76px;
-  position: relative;
-  color: var(--silver-light);
-}
-.crest > svg {
-  width: 100%;
-  height: 100%;
-}
-.crest > span {
-  font: 45px/1 var(--gothic);
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding-top: 4px;
-  transform: translateX(-2px);
-}
 .story-card > .eyebrow {
   font-size: 8px;
   margin: 24px 0 17px;
@@ -757,10 +731,6 @@ h2 em {
   .wordmark {
     gap: 10px;
   }
-  .wordmark-letter {
-    font-size: 35px;
-    padding-right: 13px;
-  }
   .wordmark > span:last-child {
     font-size: 7px;
     letter-spacing: 1.6px;
@@ -1033,16 +1003,6 @@ h2 em {
   }
 }
 /* Monograms and long names. */
-.wordmark-letter,
-.footer-monogram {
-  font: 24px var(--gothic);
-  letter-spacing: -2px;
-}
-.crest > span {
-  font: 22px var(--gothic);
-  transform: none;
-  padding-top: 2px;
-}
 .name-lockup h1.long-name {
   font-size: clamp(105px, 12vw, 165px);
   letter-spacing: -3px;
@@ -1057,9 +1017,6 @@ h2 em {
   text-transform: capitalize;
 }
 @media (max-width: 600px) {
-  .wordmark-letter {
-    font-size: 20px;
-  }
   .wordmark > span:last-child {
     font-size: 6px;
     letter-spacing: 1px;
@@ -1082,9 +1039,6 @@ h2 em {
   .wordmark {
     gap: 7px;
   }
-  .wordmark-letter {
-    padding-right: 9px;
-  }
   .wordmark > span:last-child {
     font-size: 5px;
   }
@@ -1106,12 +1060,6 @@ h2 em {
   opacity: 0.25;
   pointer-events: none;
   z-index: 0;
-}
-.hero-crown {
-  width: 68px;
-  height: 39px;
-  color: #91877f;
-  margin-bottom: 17px;
 }
 .hero-eyebrow {
   margin-bottom: 22px;
@@ -1171,17 +1119,6 @@ h2 em {
   height: 100%;
   filter: drop-shadow(1px 3px 2px #350b1a22);
 }
-.pennant > span {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 31px;
-  text-align: center;
-  font:
-    17px "Cinzel Decorative",
-    serif;
-  letter-spacing: 1px;
-}
 h2 {
   font-family: var(--gothic);
   font-weight: 400;
@@ -1204,25 +1141,6 @@ h2 em {
 .story-card h3 em {
   font-style: normal;
 }
-.royal-crest {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-}
-.royal-crest > svg {
-  width: 54px;
-  height: 31px;
-  margin-bottom: -5px;
-  color: var(--silver-light);
-}
-.royal-crest .crest {
-  width: 76px;
-  height: 85px;
-}
-.royal-crest .crest > span {
-  font: 43px var(--gothic);
-  padding-bottom: 2px;
-}
 .quote-signature {
   font-size: 26px;
 }
@@ -1233,19 +1151,9 @@ h2 em {
 .dress-card h3 {
   font: 400 42px/1.2 var(--gothic);
 }
-.closing > .castle {
-  width: 130px;
-  height: 74px;
-  color: #9d9489;
-  margin: 0 auto 20px;
-}
 .closing h2 {
   font: 400 88px/1.2 var(--gothic);
   letter-spacing: 0;
-}
-.wordmark-letter,
-.footer-monogram {
-  font-family: "Cinzel Decorative", Georgia, serif;
 }
 @media (max-width: 900px) {
   .pennant {
@@ -1253,10 +1161,6 @@ h2 em {
     width: 46px;
     height: 85px;
     top: 11px;
-  }
-  .pennant > span {
-    top: 26px;
-    font-size: 14px;
   }
   .name-lockup h1 {
     font-size: 150px;
@@ -1275,11 +1179,6 @@ h2 em {
   .hero-content {
     padding-top: 60px;
     padding-bottom: 62px;
-  }
-  .hero-crown {
-    width: 54px;
-    height: 31px;
-    margin-bottom: 16px;
   }
   .hero-eyebrow {
     font-size: 7px;
@@ -1327,10 +1226,6 @@ h2 em {
     width: 38px;
     height: 71px;
   }
-  .pennant > span {
-    font-size: 11px;
-    top: 22px;
-  }
   .section-intro h2 {
     font-size: 44px;
   }
@@ -1347,10 +1242,6 @@ h2 em {
     font-size: 8px;
     letter-spacing: 1.3px;
   }
-  .closing > .castle {
-    width: 110px;
-    height: 62px;
-  }
 }
 @media (max-width: 350px) {
   .name-lockup h1 {
@@ -1361,18 +1252,9 @@ h2 em {
     width: 32px;
     height: 60px;
   }
-  .pennant > span {
-    font-size: 9px;
-    top: 18px;
-  }
   .hero-content {
     padding-top: 55px;
     padding-bottom: 55px;
-  }
-  .hero-crown {
-    width: 48px;
-    height: 27px;
-    margin-bottom: 14px;
   }
   .hero-eyebrow {
     font-size: 6px;
@@ -1395,5 +1277,77 @@ h2 em {
   }
   .closing h2 {
     font-size: 61px;
+  }
+}
+
+/* One crowned L shield across every brand placement. */
+.brand-logo {
+  display: block;
+  width: 56px;
+  height: auto;
+  max-width: 100%;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+.brand-logo--silver {
+  filter: brightness(0) invert(91%);
+}
+.wordmark > .brand-logo {
+  width: 35px;
+}
+.hero-brand {
+  width: 63px;
+  margin-bottom: 15px;
+}
+.story-brand {
+  width: 73px;
+  margin-bottom: 0;
+}
+.closing-brand {
+  width: 73px;
+  margin: 0 auto 22px;
+}
+.footer-monogram {
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+.footer-monogram > .brand-logo {
+  width: 34px;
+}
+.pennant > .brand-logo {
+  position: absolute;
+  top: 13%;
+  left: 17%;
+  width: 66%;
+  height: auto;
+  max-width: none;
+}
+@media (max-width: 600px) {
+  .wordmark > .brand-logo {
+    width: 28px;
+  }
+  .hero-brand {
+    width: 51px;
+    margin-bottom: 13px;
+  }
+  .story-brand {
+    width: 67px;
+  }
+  .closing-brand {
+    width: 65px;
+    margin-bottom: 20px;
+  }
+  .footer-monogram > .brand-logo {
+    width: 31px;
+  }
+}
+@media (max-width: 350px) {
+  .hero-brand {
+    width: 46px;
+    margin-bottom: 12px;
+  }
+  .wordmark > .brand-logo {
+    width: 25px;
   }
 }

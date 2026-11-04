@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     : "Mis quince · Una noche para recordar",
   description:
     "Hay historias que merecen una noche inolvidable. Te invito a mis quince.",
-  icons: { icon: "/icon.svg" },
+  icons: { icon: "/brand/lola-escudo.svg" },
   robots: { index: false, follow: false },
   openGraph: {
     title: `${event.name} · Mis XV · ${event.dateShort}`,
