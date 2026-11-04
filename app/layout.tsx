@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
   openGraph: {
     title: `${event.name} · Mis XV · ${event.dateShort}`,
-    description: `${event.dateLabel}. Una noche para recordar.`,
+    description: `${event.dateLabel} · ${event.time} hs · ${event.venue}.`,
     type: "website",
     locale: "es_AR",
   },

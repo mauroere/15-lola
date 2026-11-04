@@ -7,8 +7,13 @@ import {
   GothicArch,
 } from "@/components/Ornaments";
 import BrandLogo from "@/components/BrandLogo";
+import GuestForms from "@/components/GuestForms";
+import BackgroundMusic from "@/components/BackgroundMusic";
+import { storageReady } from "@/lib/database";
 import ShareButton from "@/components/ShareButton";
-export default function Page() {
+export const dynamic = "force-dynamic";
+
+export default async function Page() {
   const date = event.date ? new Date(`${event.date}T12:00:00Z`) : null;
   const day = date
     ? new Intl.DateTimeFormat("es-AR", {
@@ -39,6 +44,7 @@ export default function Page() {
         <nav aria-label="Navegación principal">
           <a href="#celebracion">La celebración</a>
           <a href="#vestimenta">Dress code</a>
+          <a href="#confirmacion">Confirmar</a>
         </nav>
       </header>
       <main id="invitacion">
@@ -62,6 +68,13 @@ export default function Page() {
           />
           <img
             className="roses roses-bottom"
+            src="/art/burgundy-roses.webp"
+            alt=""
+            width="1100"
+            height="1005"
+          />
+          <img
+            className="roses roses-extra"
             src="/art/burgundy-roses.webp"
             alt=""
             width="1100"
@@ -178,6 +191,14 @@ export default function Page() {
           className="quote-section"
           aria-label="Un deseo para esta noche"
         >
+          <img
+            className="section-flowers"
+            src="/art/burgundy-roses.webp"
+            alt=""
+            width="1100"
+            height="1005"
+            loading="lazy"
+          />
           <Star />
           <blockquote>
             Que esta noche se convierta
@@ -193,6 +214,14 @@ export default function Page() {
           className="dress-section"
           aria-labelledby="dress-title"
         >
+          <img
+            className="dress-flowers"
+            src="/art/burgundy-roses.webp"
+            alt=""
+            width="1100"
+            height="1005"
+            loading="lazy"
+          />
           <div className="dress-heading">
             <span className="chapter">
               II <span aria-hidden="true">/</span> EL ARTE DE CELEBRAR
@@ -247,7 +276,16 @@ export default function Page() {
             </p>
           </div>
         </section>
+        <GuestForms enabled={await storageReady()} />
         <section className="closing">
+          <img
+            className="closing-flowers"
+            src="/art/burgundy-roses.webp"
+            alt=""
+            width="1100"
+            height="1005"
+            loading="lazy"
+          />
           <BrandLogo className="closing-brand" />
           <Flourish />
           <p className="eyebrow">EL PRÓXIMO CAPÍTULO LO ESCRIBIMOS JUNTOS</p>
@@ -255,6 +293,10 @@ export default function Page() {
           <p className="closing-date">{event.dateLabel}</p>
           <ShareButton />
         </section>
+        <BackgroundMusic
+          src={process.env.NEXT_PUBLIC_BACKGROUND_MUSIC_URL || ""}
+          title="thank u, next — Ariana Grande"
+        />
       </main>
       <footer className="site-footer">
         <a

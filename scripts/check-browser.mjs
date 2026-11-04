@@ -69,7 +69,17 @@ try {
       "font-family",
       /UnifrakturMaguntia/,
     );
-    assert.equal(await page.locator("form").count(), 0);
+    assert.equal(await page.locator("form").count(), 2);
+    await expect(
+      page.getByRole("button", { name: "Enviar respuesta", exact: true }),
+    ).toBeDisabled();
+    await expect(
+      page.getByRole("button", { name: "Sugerir canción", exact: true }),
+    ).toBeDisabled();
+    await expect(page.getByText("21:00 hs", { exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /Cómo llegar/ }),
+    ).toHaveAttribute("href", /maps.app.goo.gl\/f5aZKBZheer29YDGA/);
     assert.equal(
       await page
         .locator(".roses")
@@ -106,7 +116,9 @@ try {
   await page.getByRole("link", { name: "Dress code", exact: true }).click();
   await page.waitForURL("**/#vestimenta");
   await page.getByRole("button", { name: "Compartir invitación" }).click();
-  await expect(page.getByRole("status")).toHaveText("Enlace copiado.");
+  await expect(page.locator(".share-control").getByRole("status")).toHaveText(
+    "Enlace copiado.",
+  );
   assert.equal(
     await page.evaluate(() => navigator.clipboard.readText()),
     `${baseUrl}/`,
@@ -114,10 +126,10 @@ try {
   const calendar = await page.request.get(`${baseUrl}/api/calendar`);
   assert.equal(calendar.status(), 200);
   const calendarText = await calendar.text();
-  assert.match(calendarText, /DTSTART;VALUE=DATE:20270207/);
-  assert.match(calendarText, /DTEND;VALUE=DATE:20270208/);
+  assert.match(calendarText, /DTSTART:20270208T000000Z/);
+  assert.match(calendarText, /LOCATION:La Quinta Eventos/);
   assert.match(calendarText, /SUMMARY:Los XV de Lola/);
-  assert.doesNotMatch(calendarText, /DTSTART[^\r\n]*T[0-9]/);
+  assert.doesNotMatch(calendarText, /DTEND/);
   for (const line of calendarText.split("\r\n"))
     assert(Buffer.byteLength(line, "utf8") <= 75);
   const og = await page.request.get(`${baseUrl}/opengraph-image`);

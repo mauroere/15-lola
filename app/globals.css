@@ -1302,3 +1302,519 @@ h2 em {
     width: 25px;
   }
 }
+
+/* A richer floral border and burgundy accents on the parchment. */
+.roses-top {
+  width: clamp(340px, 37vw, 550px);
+  right: -65px;
+  top: -40px;
+}
+.roses-bottom {
+  width: clamp(330px, 34vw, 510px);
+  left: -80px;
+  bottom: -55px;
+}
+.roses-extra {
+  width: 235px;
+  top: 80px;
+  left: -40px;
+  transform: rotate(12deg);
+  opacity: 0.78;
+}
+.quote-section {
+  overflow: hidden;
+  background: linear-gradient(120deg, #ecd8ce, var(--paper-light) 62%, #ead5cb);
+  border-top: 3px solid var(--wine);
+}
+.section-flowers {
+  position: absolute;
+  width: 230px;
+  height: auto;
+  right: -65px;
+  bottom: -40px;
+  transform: rotate(-90deg);
+  opacity: 0.55;
+  z-index: -1;
+  pointer-events: none;
+}
+.dress-section {
+  overflow: hidden;
+  background: linear-gradient(115deg, #eddbd0, #f5e9db 65%, #e8cdc6);
+  border-top: 1px solid #590d2640;
+  border-bottom: 1px solid #590d2650;
+}
+.dress-flowers {
+  position: absolute;
+  width: 220px;
+  height: auto;
+  left: -95px;
+  bottom: -55px;
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: -1;
+}
+.dress-card {
+  border-color: #590d2670;
+  outline-color: #590d2630;
+  background: #faf3e8b8;
+}
+.closing {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(130deg, #f7ebdf, #efd9d0);
+  border-top: 3px solid var(--wine);
+}
+.closing-flowers {
+  position: absolute;
+  right: -85px;
+  bottom: -55px;
+  width: 250px;
+  height: auto;
+  transform: rotate(-90deg);
+  opacity: 0.7;
+  z-index: -1;
+  pointer-events: none;
+}
+.site-header nav {
+  gap: 28px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.guest-section,
+.song-section {
+  padding: 80px 25px;
+  scroll-margin-top: 20px;
+}
+.guest-section {
+  background: linear-gradient(130deg, #f0dbd2, var(--paper-light) 65%, #ead0ca);
+  border-top: 3px solid var(--wine);
+}
+.form-intro {
+  text-align: center;
+  max-width: 710px;
+  margin: 0 auto 35px;
+}
+.form-intro .chapter {
+  color: var(--muted);
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  margin-bottom: 20px;
+}
+.form-intro h2 {
+  font-size: clamp(34px, 4.1vw, 53px);
+  color: var(--wine);
+  margin-bottom: 20px;
+}
+.form-intro > p:last-child {
+  font-size: 19px;
+  line-height: 1.55;
+}
+.guest-form-card,
+.song-form-card {
+  max-width: 680px;
+  margin: auto;
+  padding: 32px;
+  border: 1px solid #590d2660;
+  background: #faf3e8c9;
+  outline: 1px solid #590d2620;
+  outline-offset: -7px;
+}
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.guest-form-card label,
+.song-form-card label,
+.admin-page label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font: 11px/1.5 var(--sans);
+  letter-spacing: 0.15px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.guest-form-card input,
+.guest-form-card select,
+.guest-form-card textarea,
+.song-form-card input,
+.admin-page input,
+.admin-page select {
+  font: 15px/1.5 var(--serif);
+  padding: 11px 12px;
+  min-height: 45px;
+  width: 100%;
+  max-width: 100%;
+  color: var(--ink);
+  background: #fffaf4;
+  border: 1px solid #9c877b;
+  resize: vertical;
+  border-radius: 0;
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--wine);
+  outline-offset: 3px;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.member-menu {
+  border-top: 1px solid #590d2638;
+  padding-top: 22px;
+  margin-top: 10px;
+}
+.member-menu h3 {
+  font: 400 26px var(--gothic);
+  color: var(--wine);
+  margin-bottom: 20px;
+}
+.form-link {
+  background: none;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  color: var(--wine);
+  font: 10px/1.6 var(--sans);
+  padding: 4px 0;
+  cursor: pointer;
+}
+.add-person {
+  margin: 0 0 20px;
+}
+.form-privacy {
+  font: 10px/1.65 var(--sans);
+  color: #695951;
+  margin: 12px 0 23px;
+}
+.button-wine {
+  background: var(--wine);
+  border-color: var(--wine);
+  color: #fff4e9;
+}
+.button-wine:hover {
+  background: var(--wine-dark);
+}
+button:disabled,
+fieldset:disabled button {
+  cursor: default;
+  opacity: 0.6;
+}
+fieldset:disabled input,
+fieldset:disabled select,
+fieldset:disabled textarea {
+  color: #766660;
+  background: #f2e9dd;
+}
+.form-notice {
+  font: 12px/1.7 var(--sans);
+  padding: 13px 15px;
+  background: #e7d5c7;
+  border-left: 2px solid var(--wine);
+  margin-bottom: 24px;
+}
+.form-error {
+  font: 12px/1.7 var(--sans);
+  color: #76152f;
+  margin-top: 18px;
+}
+.form-success {
+  font: 19px/1.6 var(--serif);
+  color: var(--wine);
+  padding: 16px 0;
+}
+.honeypot {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden;
+  clip-path: inset(50%);
+  pointer-events: none;
+}
+.song-section {
+  background: var(--wine-dark);
+  color: var(--paper-light);
+}
+.song-section .form-intro h2 {
+  color: var(--paper-light);
+}
+.song-section .chapter {
+  color: #dcc8bd;
+}
+.song-form-card {
+  max-width: 560px;
+  background: #faf3e8;
+  border-color: var(--silver);
+}
+.song-form-card label {
+  color: var(--ink);
+}
+.song-form-card .button-silver {
+  background: var(--wine);
+  color: var(--paper-light);
+  border-color: var(--wine);
+}
+.background-music {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 10;
+  max-width: calc(100vw - 36px);
+  color: var(--paper-light);
+  background: var(--wine-dark);
+  border: 1px solid #c8bcb0;
+  box-shadow: 0 4px 20px #350b1a20;
+}
+.background-music > button {
+  border: 0;
+  background: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 11px 16px;
+  text-align: left;
+}
+.music-symbol {
+  font: 25px var(--serif);
+}
+.music-copy {
+  font: 10px/1.6 var(--sans);
+}
+.music-copy small {
+  display: block;
+  font-size: 8px;
+  opacity: 0.85;
+}
+.background-music > p {
+  font: 10px/1.5 var(--sans);
+  padding: 0 13px 11px;
+  max-width: 260px;
+}
+.admin-page {
+  max-width: 1100px;
+  margin: auto;
+  padding: 35px 25px 75px;
+  min-height: 100svh;
+}
+.admin-home {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font: 11px var(--sans);
+}
+.admin-home .brand-logo {
+  width: 35px;
+}
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 35px;
+}
+.admin-page h1 {
+  font: 400 44px var(--gothic);
+  color: var(--wine);
+  margin-bottom: 20px;
+}
+.admin-page > p {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.admin-login {
+  max-width: 420px;
+  margin: 70px auto;
+  padding: 30px;
+  border: 1px solid var(--line);
+  background: var(--paper-light);
+}
+.admin-login p {
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0 0 25px;
+}
+.admin-meals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin: 30px 0;
+}
+.admin-meals article {
+  padding: 16px;
+  background: #f9f0e6;
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.admin-meals strong {
+  font: 30px var(--serif);
+  color: var(--wine);
+}
+.admin-meals span {
+  font: 10px var(--sans);
+}
+.admin-response {
+  padding: 25px;
+  border: 1px solid var(--line);
+  margin: 20px 0;
+  background: var(--paper-light);
+}
+.admin-response h2,
+.admin-response h3 {
+  font: 400 26px var(--serif);
+  margin-bottom: 12px;
+}
+.admin-response p {
+  font-size: 17px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  margin-bottom: 10px;
+}
+.button-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.button-row .button {
+  letter-spacing: 0;
+  text-align: left;
+}
+.admin-songs {
+  margin-top: 45px;
+}
+.admin-songs > h2 {
+  font-size: 34px;
+}
+.admin-limit {
+  font: 11px var(--sans) !important;
+  color: var(--muted);
+}
+@media (max-width: 600px) {
+  .site-header nav {
+    gap: 13px;
+  }
+  .site-header nav a {
+    font-size: 7px;
+  }
+  .roses-top {
+    width: 315px;
+    right: -105px;
+    top: -33px;
+  }
+  .roses-bottom {
+    width: 310px;
+    left: -115px;
+    bottom: -37px;
+  }
+  .roses-extra {
+    width: 180px;
+    left: -38px;
+    top: 45px;
+    transform: none;
+    opacity: 0.8;
+  }
+  .section-flowers {
+    width: 170px;
+    right: -85px;
+    bottom: -35px;
+    opacity: 0.35;
+  }
+  .dress-flowers {
+    width: 170px;
+    left: -105px;
+    bottom: -30px;
+    opacity: 0.4;
+  }
+  .closing-flowers {
+    width: 180px;
+    right: -100px;
+    bottom: -35px;
+    opacity: 0.4;
+  }
+  .guest-section,
+  .song-section {
+    padding: 60px 20px;
+  }
+  .form-intro h2 {
+    font-size: 35px;
+  }
+  .form-intro > p:last-child {
+    font-size: 17px;
+  }
+  .guest-form-card,
+  .song-form-card {
+    padding: 25px 20px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .guest-form-card input,
+  .guest-form-card textarea,
+  .guest-form-card select,
+  .song-form-card input {
+    font-size: 16px;
+  }
+  .background-music {
+    right: 12px;
+    bottom: 12px;
+    max-width: calc(100vw - 24px);
+  }
+  .background-music > button {
+    padding: 9px 13px;
+  }
+  .music-copy small {
+    font-size: 8px;
+  }
+  .admin-page h1 {
+    font-size: 37px;
+  }
+  .admin-response {
+    padding: 19px;
+  }
+}
+@media (max-width: 350px) {
+  .site-header {
+    padding: 0 16px;
+  }
+  .site-header nav {
+    gap: 9px;
+  }
+  .site-header nav a {
+    font-size: 6px;
+  }
+  .wordmark {
+    gap: 6px;
+  }
+  .roses-extra {
+    width: 160px;
+    left: -38px;
+  }
+  .form-intro h2 {
+    font-size: 31px;
+  }
+}
+.story-card > .text-link {
+  color: var(--paper-light);
+}
+.form-notice {
+  color: var(--ink);
+}

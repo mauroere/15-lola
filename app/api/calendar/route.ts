@@ -11,7 +11,7 @@ export function GET() {
       status: 404,
       headers: { "Cache-Control": "no-store" },
     });
-  // Save the date: evento de día completo, sin inventar un horario.
+  // Argentina UTC-3; no end time is invented.
   const start = event.date.replaceAll("-", "");
   const followingDay = new Date(`${event.date}T12:00:00Z`);
   followingDay.setUTCDate(followingDay.getUTCDate() + 1);
@@ -24,8 +24,11 @@ export function GET() {
     "BEGIN:VEVENT",
     `UID:mis-quince-${start}@invitacion.local`,
     "DTSTAMP:20261104T000000Z",
-    `DTSTART;VALUE=DATE:${start}`,
-    `DTEND;VALUE=DATE:${end}`,
+    ...(event.time
+      ? [
+          `DTSTART:${new Date(`${event.date}T${event.time}:00-03:00`).toISOString().replace(/[-:]/g, "").replace(".000", "")}`,
+        ]
+      : [`DTSTART;VALUE=DATE:${start}`, `DTEND;VALUE=DATE:${end}`]),
     `SUMMARY:${escape(`Los XV de ${event.name}`)}`,
     `DESCRIPTION:${escape("Guardá esta fecha. Dress code: elegante. Evitar bordó, plateado y blanco.")}`,
     ...(event.venue ? [`LOCATION:${escape(event.venue)}`] : []),

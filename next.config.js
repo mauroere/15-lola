@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
+  outputFileTracingIncludes: { "/*": ["./scripts/certs/*.crt"] },
   async rewrites() {
     return [{ source: "/icon.svg", destination: "/brand/lola-escudo.svg" }];
   },
