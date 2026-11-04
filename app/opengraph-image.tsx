@@ -4,7 +4,7 @@ import path from "node:path";
 import { event } from "@/lib/event";
 export const runtime = "nodejs";
 export const alt =
-  "Lola. Mis quince, 7 de febrero de 2027. Invitación medieval en beige, bordó y plateado.";
+  "Invitación a los quince de Lola. 7 de febrero de 2027, 21 hs, La Quinta Eventos.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export default async function Image() {
@@ -88,8 +88,8 @@ export default async function Image() {
           alt=""
           style={{ marginBottom: 16 }}
         />
-        <span style={{ fontFamily: "Serif", fontSize: 24, letterSpacing: 9 }}>
-          MIS QUINCE AÑOS
+        <span style={{ fontFamily: "Serif", fontSize: 22, letterSpacing: 5 }}>
+          TE INVITO A MIS QUINCE
         </span>
         <span style={{ fontFamily: "Medieval", fontSize: 120, marginTop: 10 }}>
           {event.name}
@@ -104,8 +104,11 @@ export default async function Image() {
             marginBottom: 28,
           }}
         />
-        <span style={{ fontFamily: "Serif", fontSize: 29, letterSpacing: 4 }}>
-          {event.dateShort}
+        <span style={{ fontFamily: "Serif", fontSize: 29, letterSpacing: 1 }}>
+          {event.dateLabel}
+        </span>
+        <span style={{ fontFamily: "Serif", fontSize: 24, marginTop: 12 }}>
+          {event.time} hs · {event.venue}
         </span>
       </div>
     </div>,

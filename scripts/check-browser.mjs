@@ -76,7 +76,9 @@ try {
     await expect(
       page.getByRole("button", { name: "Sugerir canción", exact: true }),
     ).toBeDisabled();
-    await expect(page.getByText("21:00 hs", { exact: true })).toBeVisible();
+    await expect(
+      page.locator("#inicio").getByText("21:00 hs", { exact: true }),
+    ).toBeVisible();
     await expect(
       page.getByRole("link", { name: /Cómo llegar/ }),
     ).toHaveAttribute("href", /maps.app.goo.gl\/f5aZKBZheer29YDGA/);

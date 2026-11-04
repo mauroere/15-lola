@@ -16,8 +16,7 @@ export const metadata: Metadata = {
   title: event.date
     ? `${event.name} · Mis XV · ${event.dateShort}`
     : "Mis quince · Una noche para recordar",
-  description:
-    "Hay historias que merecen una noche inolvidable. Te invito a mis quince.",
+  description: `Te invito a celebrar mis quince años. ${event.dateLabel} · ${event.time} hs · ${event.venue}.`,
   icons: { icon: "/brand/lola-escudo.svg" },
   robots: { index: false, follow: false },
   openGraph: {

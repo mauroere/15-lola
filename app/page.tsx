@@ -81,9 +81,8 @@ export default async function Page() {
             height="1005"
           />
           <div className="hero-content">
-            <p className="eyebrow hero-eyebrow">Una noche. Mil recuerdos.</p>
-            <p className="save-date">
-              Save <span>the date</span>
+            <p className="hero-invitation">
+              Te invito a celebrar <span>mis quince años</span>
             </p>
             <QuillArrow className="hero-flourish" />
             <div className="name-lockup">
@@ -93,19 +92,21 @@ export default async function Page() {
               >
                 {event.name}
               </h1>
-              <p>
-                Mis <span>XV</span>
-              </p>
             </div>
             <p className="date">
               {event.date ? (
-                <time dateTime={event.date}>{event.dateShort}</time>
+                <time dateTime={event.date}>{event.dateLabel}</time>
               ) : (
                 event.dateShort
               )}
             </p>
+            <p className="hero-event">
+              <strong>{event.time} hs</strong>
+              <span aria-hidden="true">·</span>
+              <span>{event.venue}</span>
+            </p>
             <a className="hero-invite" href="#celebracion">
-              Estás invitado a mi historia <span aria-hidden="true">↓</span>
+              Los detalles de la fiesta <span aria-hidden="true">↓</span>
             </a>
           </div>
           <p className="hero-side-note" aria-hidden="true">
@@ -122,18 +123,18 @@ export default async function Page() {
               I <span aria-hidden="true">/</span> LA CELEBRACIÓN
             </span>
             <h2 id="celebration-title">
-              Un nuevo <em>capítulo.</em>
+              Mis quince, <em>con vos.</em>
             </h2>
             <p>
-              Hay momentos que se sueñan durante mucho tiempo.
+              Quiero invitarte a compartir una noche muy especial.
               <br />
-              El mío está por llegar, y quiero compartirlo con vos.
+              Tu presencia hará que sea inolvidable.
             </p>
           </div>
           <div className="celebration-details">
             <article className="date-card">
               <Star />
-              <p className="eyebrow">GUARDÁ ESTA FECHA</p>
+              <p className="eyebrow">FECHA Y HORARIO</p>
               <span className="day">{day}</span>
               <p className="month">{month}</p>
               <p className="year">{year}</p>
@@ -145,10 +146,12 @@ export default async function Page() {
                   href="/api/calendar"
                   download="mis-quince.ics"
                 >
-                  Agendar la fecha <span aria-hidden="true">↗</span>
+                  Agregar a mi calendario <span aria-hidden="true">↗</span>
                 </a>
               ) : (
-                <p className="date-pending">Pronto, todos los detalles.</p>
+                <p className="date-pending">
+                  Consultá la fecha con la organización.
+                </p>
               )}
             </article>
             <article className="story-card">
@@ -172,14 +175,14 @@ export default async function Page() {
               ) : (
                 <>
                   <h3>
-                    Lo mejor está
+                    El lugar de
                     <br />
-                    <em>por venir.</em>
+                    <em>nuestra noche.</em>
                   </h3>
                   <p>
-                    Muy pronto voy a compartir
+                    Consultá la ubicación
                     <br />
-                    el lugar y todos los detalles.
+                    con la organización.
                   </p>
                 </>
               )}

@@ -30,7 +30,7 @@ export function GET() {
         ]
       : [`DTSTART;VALUE=DATE:${start}`, `DTEND;VALUE=DATE:${end}`]),
     `SUMMARY:${escape(`Los XV de ${event.name}`)}`,
-    `DESCRIPTION:${escape("Guardá esta fecha. Dress code: elegante. Evitar bordó, plateado y blanco.")}`,
+    `DESCRIPTION:${escape("Te invito a celebrar mis quince años. Dress code: elegante. Evitar bordó, plateado y blanco.")}`,
     ...(event.venue ? [`LOCATION:${escape(event.venue)}`] : []),
     "END:VEVENT",
     "END:VCALENDAR",

@@ -1,6 +1,8 @@
 # Los XV de Lola
 
-Invitación independiente para **Lola · 7 de febrero de 2027 · 21:00 hs de Argentina · La Quinta Eventos**. [Ubicación confirmada](https://maps.app.goo.gl/f5aZKBZheer29YDGA?g_st=ac). Diseño medieval beige y bordó, flores y detalles plateados. Dress code elegante; evitar bordó, plateado y blanco.
+Invitación formal e independiente para **Lola · 7 de febrero de 2027 · 21:00 hs de Argentina · La Quinta Eventos**. [Ubicación confirmada](https://maps.app.goo.gl/f5aZKBZheer29YDGA?g_st=ac). Diseño medieval beige y bordó, flores y detalles plateados. Dress code elegante; evitar bordó, plateado y blanco.
+
+La portada invita a la fiesta y presenta fecha, horario y salón; no funciona como un anuncio previo.
 
 ## Funciones
 

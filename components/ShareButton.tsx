@@ -11,7 +11,7 @@ export default function ShareButton() {
         await navigator.share({
           title: `Los XV de ${event.name}`,
           text: event.date
-            ? `Te invito a mis quince. ${event.dateLabel}.`
+            ? `Te invito a celebrar mis quince años. ${event.dateLabel}, a las ${event.time} hs, en ${event.venue}.`
             : "Te invito a mis quince. Una noche para recordar.",
           url,
         });
