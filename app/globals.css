@@ -238,7 +238,10 @@ img {
   letter-spacing: 2.8px;
 }
 .save-date {
-  font: clamp(44px, 5.1vw, 70px)/1.05 var(--gothic);
+  font:
+    clamp(44px, 5.1vw, 70px)/1.05 "Cinzel Decorative",
+    Georgia,
+    serif;
   color: var(--wine);
   letter-spacing: -3px;
 }
