@@ -12,10 +12,10 @@ export default async function Dashboard() {
     return <AdminLogin available={ready && adminConfigured()} />;
   const [rsvps, songs] = await Promise.all([
     database().query(
-      "select * from lola15.rsvps order by created_at desc limit 1000",
+      "select * from lola15.rsvps order by created_at desc,id desc",
     ),
     database().query(
-      "select * from lola15.songs order by created_at desc limit 1000",
+      "select * from lola15.songs order by created_at desc,id desc",
     ),
   ]);
   return (

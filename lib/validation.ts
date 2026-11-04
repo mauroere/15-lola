@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { cleanName, nameKey } from "./identity";
 import { cleanPhoneNumber } from "./phone-utils";
 export const mealOptions = [
   { value: "standard", label: "Sin restricciones" },
@@ -7,9 +8,13 @@ export const mealOptions = [
   { value: "vegan", label: "Vegano" },
   { value: "other", label: "Otra necesidad" },
 ] as const;
+const personName = z
+  .string()
+  .transform(cleanName)
+  .pipe(z.string().min(2).max(100));
 export const memberSchema = z
   .object({
-    name: z.string().trim().min(2).max(100),
+    name: personName,
     menu: z.enum(["standard", "gluten_free", "vegetarian", "vegan", "other"]),
     notes: z.string().trim().max(250),
   })
@@ -20,7 +25,7 @@ export const memberSchema = z
 export const rsvpSchema = z
   .object({
     id: z.uuid(),
-    contactName: z.string().trim().min(2).max(100),
+    contactName: personName,
     phone: z
       .string()
       .trim()
@@ -29,7 +34,7 @@ export const rsvpSchema = z
       .regex(/^\+?[\d\s()-]+$/)
       .transform(cleanPhoneNumber)
       .refine(
-        (phone) => phone.length >= 8 && phone.length <= 15,
+        (phone) => /^[1-9]\d{7,14}$/.test(phone),
         "Ingresá un WhatsApp con código de área.",
       ),
     attending: z.boolean(),
@@ -40,10 +45,16 @@ export const rsvpSchema = z
     (input) =>
       input.attending ? input.members.length >= 1 : input.members.length === 0,
     "Revisá las personas que van a asistir.",
+  )
+  .refine(
+    (input) =>
+      new Set(input.members.map((member) => nameKey(member.name))).size ===
+      input.members.length,
+    "Hay nombres repetidos. Si son personas distintas, agregá una aclaración, por ejemplo padre o hijo.",
   );
 export const songSchema = z.object({
   id: z.uuid(),
-  name: z.string().trim().min(2).max(100),
+  name: personName,
   song: z.string().trim().min(2).max(160),
   website: z.literal(""),
 });

@@ -1,6 +1,6 @@
 import { PGlite } from "@electric-sql/pglite";
 import { createServer } from "node:http";
-import { readFile, mkdtemp, rm } from "node:fs/promises";
+import { readFile, readdir, mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import assert from "node:assert/strict";
@@ -12,9 +12,8 @@ import { saveGuestRequest, reviewGuestRequest } from "../lib/repository";
 const root = process.cwd(),
   output = await mkdtemp(path.join(tmpdir(), "lola-fixture-")),
   db = new PGlite();
-await db.exec(
-  await readFile("db/migrations/202611040001_guest_features.sql", "utf8"),
-);
+for (const migration of (await readdir("db/migrations")).sort())
+  await db.exec(await readFile(`db/migrations/${migration}`, "utf8"));
 await build({
   entryPoints: ["tests/fixture-entry.tsx"],
   outdir: output,
@@ -47,7 +46,12 @@ const server = createServer(async (req, res) => {
           error: "No se pudo guardar. Reintentá.",
         });
       if (route === "/__review") {
-        await reviewGuestRequest(db, input.id, input.status);
+        await reviewGuestRequest(
+          db,
+          input.id,
+          input.status,
+          input.expectedStatus,
+        );
         return send(res, 200, { success: true });
       }
       const parsed =
@@ -136,10 +140,10 @@ try {
     .fill("11 3154 5678");
   await page.locator("#guest-main-menu").selectOption("gluten_free");
   await page
-    .getByRole("button", { name: "+ Agregar acompañante", exact: true })
+    .getByRole("button", { name: "+ Agregar persona invitada", exact: true })
     .click();
   await page
-    .getByLabel("Nombre y apellido del acompañante 1", { exact: true })
+    .getByLabel("Nombre y apellido de la persona invitada 1", { exact: true })
     .fill("Acompañante local");
   await page.locator("#companion-0-menu").selectOption("vegan");
   failure = true;
@@ -188,7 +192,10 @@ try {
   );
   await page.goto(origin + "/?screen=admin");
   await expect(
-    page.getByRole("heading", { name: "Persona aislada", exact: true }),
+    page.getByRole("heading", {
+      name: "Respondió: Persona aislada",
+      exact: true,
+    }),
   ).toBeVisible();
   await page
     .getByRole("button", {
@@ -197,6 +204,15 @@ try {
     })
     .click();
   await expect(page.getByText(/2 asistentes aprobados/)).toBeVisible();
+  const downloaded = page.waitForEvent("download");
+  await page
+    .getByRole("button", { name: "Descargar asistentes y menús", exact: true })
+    .click();
+  const exportFile = await downloaded;
+  const exported = await readFile((await exportFile.path())!, "utf8");
+  assert(exported.includes("Persona aislada"));
+  assert(exported.includes("Acompañante local"));
+  assert(exported.includes("Sin TACC"));
   assert.deepEqual(
     (await new AxeBuilder({ page }).analyze()).violations.map((v) => v.id),
     [],
@@ -208,7 +224,7 @@ try {
   await page
     .getByLabel("WhatsApp de contacto", { exact: true })
     .fill("11 3154 5678");
-  await page.getByLabel("¿Vas a venir?").selectOption("no");
+  await page.getByLabel("¿Van a venir?").selectOption("no");
   await page
     .getByRole("button", { name: "Enviar respuesta", exact: true })
     .click();
@@ -221,6 +237,87 @@ try {
     })
     .click();
   await expect(page.getByText(/0 asistentes aprobados/)).toBeVisible();
+  // A parent can respond for someone else, without becoming an attendee.
+  await page.goto(origin);
+  await page
+    .getByLabel("Tu nombre y apellido", { exact: true })
+    .fill("Madre de prueba");
+  await page
+    .getByLabel("WhatsApp de contacto", { exact: true })
+    .fill("2324 456789");
+  await page
+    .getByRole("checkbox", { name: "Yo también voy a asistir" })
+    .uncheck();
+  await page
+    .getByLabel("Nombre y apellido de la persona invitada 1", { exact: true })
+    .fill("Hija invitada");
+  await page.locator("#companion-0-menu").selectOption("other");
+  await page.locator("#companion-0-notes").fill("Menú especial de prueba");
+  await page
+    .getByRole("button", { name: "Enviar respuesta", exact: true })
+    .click();
+  await expect(page.locator("#confirmacion").getByRole("status")).toContainText(
+    "pendiente de revisión",
+  );
+  const proxy = (
+    await db.query<any>(
+      "select members from lola15.rsvps where contact_name='Madre de prueba'",
+    )
+  ).rows[0];
+  assert.deepEqual(
+    proxy.members.map((member: any) => member.name),
+    ["Hija invitada"],
+  );
+  await page
+    .getByRole("button", { name: "Corregir mi respuesta", exact: true })
+    .click();
+  await expect(
+    page.getByLabel("Tu nombre y apellido", { exact: true }),
+  ).toHaveValue("Madre de prueba");
+  await expect(
+    page.getByRole("checkbox", { name: "Yo también voy a asistir" }),
+  ).not.toBeChecked();
+  await expect(
+    page.getByLabel("Nombre y apellido de la persona invitada 1", {
+      exact: true,
+    }),
+  ).toHaveValue("Hija invitada");
+  // Simulate a successful database commit followed by a lost response, then edit and retry.
+  await page.goto(origin);
+  await page
+    .getByLabel("Tu nombre y apellido", { exact: true })
+    .fill("Persona reintento");
+  await page
+    .getByLabel("WhatsApp de contacto", { exact: true })
+    .fill("11 4111 5678");
+  await page.route(
+    "**/__rsvp",
+    async (route) => {
+      await route.fetch();
+      await route.abort("failed");
+    },
+    { times: 1 },
+  );
+  await page
+    .getByRole("button", { name: "Enviar respuesta", exact: true })
+    .click();
+  await expect(page.getByRole("alert")).toContainText("No se pudo conectar");
+  await page.locator("#guest-main-menu").selectOption("vegan");
+  await page
+    .getByRole("button", { name: "Enviar respuesta", exact: true })
+    .click();
+  await expect(page.locator("#confirmacion").getByRole("status")).toContainText(
+    "pendiente de revisión",
+  );
+  const retried = (
+    await db.query<any>(
+      "select id,members from lola15.rsvps where contact_name='Persona reintento' order by created_at,id",
+    )
+  ).rows;
+  assert.equal(retried.length, 2);
+  assert.notEqual(retried[0].id, retried[1].id);
+  assert.equal(retried[0].members[0].menu, "standard");
+  assert.equal(retried[1].members[0].menu, "vegan");
   await page.goto(origin + "/?screen=music");
   await expect(
     page.getByRole("button", { name: /Pausar música/ }),

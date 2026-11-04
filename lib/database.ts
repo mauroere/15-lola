@@ -1,4 +1,5 @@
 import "server-only";
+import { storageAvailable } from "./repository";
 import { Pool } from "pg";
 import { connectionConfig } from "@/scripts/postgres-config.cjs";
 const globalPool = globalThis as unknown as { lolaPool?: Pool };
@@ -19,8 +20,7 @@ export function database() {
 export async function storageReady() {
   if (!databaseConfigured()) return false;
   try {
-    await database().query("select id from lola15.rsvps limit 0");
-    return true;
+    return await storageAvailable(database());
   } catch {
     return false;
   }

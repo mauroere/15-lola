@@ -20,6 +20,13 @@ import {
 } from "@/lib/admin";
 const unavailable =
   "No se pudo guardar. Tu respuesta sigue en el formulario; volvé a intentar en unos instantes.";
+function refreshDashboard() {
+  try {
+    revalidatePath("/dashboard");
+  } catch {
+    console.error("Lola dashboard refresh failed after a completed operation.");
+  }
+}
 async function clientKey() {
   const h = await headers();
   return hash(
@@ -38,7 +45,11 @@ async function save(kind: "rsvp" | "song", value: unknown) {
   if (!parsed.success)
     return {
       success: false,
-      error: "Revisá los nombres, el WhatsApp y los datos del formulario.",
+      error:
+        parsed.error.issues.find((issue) => issue.code === "custom")?.message ||
+        (kind === "song"
+          ? "Revisá tu nombre, la canción y el artista."
+          : "Revisá los nombres, el WhatsApp y los datos del formulario."),
     };
   if (!(await storageReady()))
     return {
@@ -50,7 +61,7 @@ async function save(kind: "rsvp" | "song", value: unknown) {
   try {
     client = await database().connect();
     await saveGuestRequest(client, kind, parsed.data, await clientKey());
-    revalidatePath("/dashboard");
+    refreshDashboard();
     return { success: true };
   } catch (error) {
     return {
@@ -58,7 +69,9 @@ async function save(kind: "rsvp" | "song", value: unknown) {
       error:
         error instanceof Error && error.message === "RATE_LIMIT"
           ? "Ya recibimos varios envíos. Esperá unos minutos para volver a intentar."
-          : unavailable,
+          : error instanceof Error && error.message === "IDEMPOTENCY_CONFLICT"
+            ? "Ese envío ya fue recibido con otros datos. Enviá una corrección para registrar el cambio."
+            : unavailable,
     };
   } finally {
     client?.release();
@@ -99,7 +112,7 @@ export async function logoutAdmin() {
         [hash(token)],
       );
     cookieStore.delete(adminCookie);
-    revalidatePath("/dashboard");
+    refreshDashboard();
     return { success: true };
   } catch {
     return {
@@ -108,30 +121,53 @@ export async function logoutAdmin() {
     };
   }
 }
-export async function reviewRSVP(id: string, status: "approved" | "rejected") {
+export async function reviewRSVP(
+  id: string,
+  status: "approved" | "rejected",
+  expectedStatus: unknown,
+) {
   try {
     if (!(await isAdmin()))
       return {
         success: false,
         error: "Ingresá al panel para revisar respuestas.",
+        authRequired: true,
       };
     if (
       !z.uuid().safeParse(id).success ||
-      !["approved", "rejected"].includes(status)
+      !["approved", "rejected"].includes(status) ||
+      !z.enum(["pending", "approved", "rejected"]).safeParse(expectedStatus)
+        .success
     )
       return { success: false, error: "Respuesta inválida." };
     const client = await database().connect();
     try {
-      await reviewGuestRequest(client, id, status);
+      await reviewGuestRequest(
+        client,
+        id,
+        status,
+        expectedStatus as "pending" | "approved" | "rejected",
+      );
     } finally {
       client.release();
     }
-    revalidatePath("/dashboard");
+    refreshDashboard();
     return { success: true };
-  } catch {
+  } catch (error) {
+    const messages: Record<string, string> = {
+      NOT_FOUND: "La respuesta ya no está disponible. Actualizá el panel.",
+      OBSOLETE_RESPONSE:
+        "Esta respuesta fue reemplazada. Revisá la más reciente.",
+      STALE_REVIEW:
+        "Otra persona ya revisó esta respuesta. Actualizá el panel antes de continuar.",
+      NEWER_RESPONSE:
+        "Hay una respuesta más reciente de este contacto. Revisá esa para contar la asistencia actual.",
+    };
     return {
       success: false,
-      error: "No se pudo guardar la revisión. Volvé a intentar.",
+      error:
+        (error instanceof Error && messages[error.message]) ||
+        "No se pudo guardar la revisión. Volvé a intentar.",
     };
   }
 }

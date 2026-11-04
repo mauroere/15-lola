@@ -6,9 +6,11 @@ La portada invita a la fiesta y presenta fecha, horario y salón; no funciona co
 
 ## Funciones
 
-- Formulario abierto de asistencia y hasta 11 acompañantes: nombre, WhatsApp, respuesta y menú por persona. Opciones: sin restricciones, sin TACC, vegetariano, vegano y otra necesidad; alergias/notas opcionales, con descripción requerida para «Otra necesidad».
-- Los envíos quedan **pendientes de revisión**. `/dashboard` permite aprobar/rechazar y consultar asistentes y menús aprobados. Aprobar otro envío del mismo nombre y WhatsApp reemplaza el anterior en los totales; mantiene ambas respuestas. No se publican datos de invitados.
-- Sugerencias de canción y artista, guardadas en la base y consultables en el panel.
+- Formulario abierto, sin lista previa: quien responde escribe su nombre y WhatsApp y puede confirmar por otros sin asistir. Hasta 12 asistentes por envío: nombre, WhatsApp, respuesta y menú por persona. Opciones: sin restricciones, sin TACC, vegetariano, vegano y otra necesidad; alergias/notas opcionales, con descripción requerida para «Otra necesidad».
+- Los envíos quedan **pendientes de revisión**. `/dashboard` permite aprobar/rechazar y consultar asistentes y menús aprobados. Aprobar un envío más reciente del mismo nombre y WhatsApp reemplaza el anterior en los totales; mantiene ambas respuestas. Las respuestas reemplazadas no pueden reactivarse y una vista desactualizada no puede pisar otra revisión. No se publican datos de invitados.
+- Resumen de quién respondió y quiénes asistirán, con opción de enviar una corrección. El contacto puede responder sin contarse como invitado.
+- Panel con búsqueda, actualización automática/manual, paginación, fecha del envío y CSV de asistentes/menús aprobados, con totales sobre todas las respuestas. No envía notificaciones automáticas por correo o WhatsApp.
+- Sugerencias de canción y artista, guardadas en la base y consultables en el panel; se pueden enviar varias canciones.
 - Validación del servidor, cupos de frecuencia y protección contra doble envío mediante UUID. Los errores conservan los formularios; no se informa éxito si falla la escritura.
 - Calendario con inicio a las **21:00 de Argentina (00:00 UTC del 8/2)**, sin inventar una hora de finalización. Enlace discreto a Google Maps y compartir/copiar la invitación.
 - Reproductor preparado para **thank u, next — Ariana Grande**, desde el comienzo. Volumen inicial 25%, repetición, pausa y reintento. Intenta autoplay; si el navegador lo bloquea, usa el primer clic/toque o Enter/Espacio. Una pausa manual se respeta. **Falta el archivo de audio o una URL HTTPS directa al archivo**; el título y un enlace a Spotify no contienen audio para el reproductor.
@@ -17,7 +19,7 @@ Los datos están en `lib/event.ts`. No hay invitados, claves, fotos, audio ni co
 
 ## Estado de la conexión
 
-Por decisión del usuario, **la base se conectará después**. Mientras falte la conexión o el esquema, los formularios muestran aviso y mantienen el envío deshabilitado. `/api/health` devuelve 503 sin exponer credenciales ni invitados. La landing, la ubicación y el calendario funcionan sin base.
+Por decisión del usuario, **la base se conectará después**. Mientras falte la conexión o alguna de las tablas de asistencia, canciones, sesiones o límites, los formularios muestran aviso y mantienen el envío deshabilitado. `/api/health` devuelve 503 sin exponer credenciales ni invitados. La landing, la ubicación y el calendario funcionan sin base.
 
 ### Configurar la base de Lola en Vercel
 
@@ -63,3 +65,5 @@ PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run check:forms
 `check:forms` inicia una base PGlite aislada y renderiza los componentes reales con un adaptador local de las acciones: guardado y revisión, menús por persona, reintentos, errores, sugerencias, accesibilidad y reproducción de un audio sintético. No usa cuentas, invitados, mensajes ni archivos de música reales. El puerto 3041 se cierra al terminar.
 
 `npm test` prueba las acciones reales con servicios de Next/base aislados, permisos administrativos, sesiones, errores, transacciones PostgreSQL, validación, límites, doble envío, reemplazo de respuestas y calendario.
+
+[Auditoría funcional y correcciones del 4/11/2026](docs/auditoria-funcional-2026-11-04.md).

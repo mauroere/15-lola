@@ -15,8 +15,12 @@ export async function submitRSVP(input: unknown) {
 export async function suggestSong(input: unknown) {
   return post("/__song", input);
 }
-export async function reviewRSVP(id: string, status: string) {
-  return post("/__review", { id, status });
+export async function reviewRSVP(
+  id: string,
+  status: string,
+  expectedStatus: string,
+) {
+  return post("/__review", { id, status, expectedStatus });
 }
 export async function logoutAdmin() {
   return {

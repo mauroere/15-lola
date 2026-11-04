@@ -1,13 +1,14 @@
 import { test, before, after, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { PGlite } from "@electric-sql/pglite";
 import { rsvpSchema, songSchema, type RSVPInput } from "../lib/validation";
 import {
   saveGuestRequest,
   reviewGuestRequest,
   consumeLimit,
+  storageAvailable,
 } from "../lib/repository";
 import { GET as calendar } from "../app/api/calendar/route";
 let db: PGlite;
@@ -29,9 +30,8 @@ const response = (changes: Partial<RSVPInput> = {}) =>
   });
 before(async () => {
   db = new PGlite();
-  await db.exec(
-    readFileSync("db/migrations/202611040001_guest_features.sql", "utf8"),
-  );
+  for (const migration of readdirSync("db/migrations").sort())
+    await db.exec(readFileSync(`db/migrations/${migration}`, "utf8"));
   await db.exec("create role fixture_visitor nologin;");
 });
 after(async () => {
@@ -121,7 +121,6 @@ test("approval counts exactly one active response; a later decline replaces it w
   const first = response(),
     decline = response({ attending: false, members: [] });
   await saveGuestRequest(db, "rsvp", first, "fixture");
-  await saveGuestRequest(db, "rsvp", decline, "fixture");
   await reviewGuestRequest(db, first.id, "approved");
   assert.equal(
     (
@@ -131,6 +130,7 @@ test("approval counts exactly one active response; a later decline replaces it w
     ).rows[0].n,
     1,
   );
+  await saveGuestRequest(db, "rsvp", decline, "fixture");
   await reviewGuestRequest(db, decline.id, "approved");
   const { rows } = await db.query<any>("select id,status from lola15.rsvps");
   assert.equal(rows.find((row) => row.id === first.id).status, "superseded");
@@ -148,8 +148,8 @@ test("rejected requests never contribute to catering; review failure rolls back 
   const first = response(),
     second = response();
   await saveGuestRequest(db, "rsvp", first, "fixture");
-  await saveGuestRequest(db, "rsvp", second, "fixture");
   await reviewGuestRequest(db, first.id, "approved");
+  await saveGuestRequest(db, "rsvp", second, "fixture");
   const original = db.query.bind(db);
   const client = {
     query: async (sql: string, args?: any[]) => {
@@ -228,4 +228,119 @@ test("remote PostgreSQL connections always verify TLS; only loopback permits pla
     connectionConfig("postgres://fixture:local-test@127.0.0.1/postgres").ssl,
     false,
   );
+});
+
+test("a representative can identify themselves without being counted as a guest; duplicate people and zero phones are rejected", async () => {
+  const data = response({
+    contactName: "  Madre   de prueba  ",
+    members: [{ name: "Hija invitada", menu: "vegetarian", notes: "" }],
+  });
+  assert.equal(data.contactName, "Madre de prueba");
+  await saveGuestRequest(db, "rsvp", data, "proxy");
+  await reviewGuestRequest(db, data.id, "approved", "pending");
+  const stored = (
+    await db.query<any>("select contact_name,members from lola15.rsvps")
+  ).rows[0];
+  assert.equal(stored.contact_name, "Madre de prueba");
+  assert.deepEqual(
+    stored.members.map((person: any) => person.name),
+    ["Hija invitada"],
+  );
+  assert.throws(() =>
+    response({
+      members: [
+        { name: "Ana Lopez", menu: "standard", notes: "" },
+        { name: " ana   lopez ", menu: "vegan", notes: "" },
+      ],
+    }),
+  );
+  assert.throws(() => response({ phone: "0000000000" }));
+});
+test("reusing an id with different data reports a conflict and never silently discards an edit", async () => {
+  const data = response();
+  await saveGuestRequest(db, "rsvp", data, "fixture");
+  await assert.rejects(
+    saveGuestRequest(
+      db,
+      "rsvp",
+      {
+        ...data,
+        members: [{ name: "Persona corregida", menu: "vegan", notes: "" }],
+      },
+      "fixture",
+    ),
+    /IDEMPOTENCY_CONFLICT/,
+  );
+  assert.equal(
+    (await db.query<any>("select members from lola15.rsvps")).rows[0].members[0]
+      .name,
+    "Persona de prueba",
+  );
+});
+test("old pending responses, replaced approvals and stale review screens cannot overwrite the latest decision", async () => {
+  const first = response();
+  await saveGuestRequest(db, "rsvp", first, "fixture");
+  const latest = response();
+  await saveGuestRequest(db, "rsvp", latest, "fixture");
+  await db.query(
+    "update lola15.rsvps set created_at=now()-interval '1 minute' where id=$1",
+    [first.id],
+  );
+  await assert.rejects(
+    reviewGuestRequest(db, first.id, "approved", "pending"),
+    /NEWER_RESPONSE/,
+  );
+  await reviewGuestRequest(db, latest.id, "approved", "pending");
+  await assert.rejects(
+    reviewGuestRequest(db, latest.id, "rejected", "pending"),
+    /STALE_REVIEW/,
+  );
+  const correction = response();
+  await saveGuestRequest(db, "rsvp", correction, "fixture");
+  await db.query(
+    "update lola15.rsvps set created_at=now()+interval '1 minute' where id=$1",
+    [correction.id],
+  );
+  await reviewGuestRequest(db, correction.id, "approved", "pending");
+  await assert.rejects(
+    reviewGuestRequest(db, latest.id, "approved"),
+    /OBSOLETE_RESPONSE/,
+  );
+  assert.equal(
+    (
+      await db.query<any>(
+        "select count(*)::int n from lola15.rsvps where status='approved'",
+      )
+    ).rows[0].n,
+    1,
+  );
+});
+test("the upgrade normalizes contact spacing and preserves historical responses while repairing duplicate approvals", async () => {
+  await db.exec("drop index lola15.lola15_one_approved_response;");
+  const earlier = response(),
+    later = response();
+  for (const [data, name, date] of [
+    [earlier, "Persona  de prueba", "2026-11-01T00:00:00Z"],
+    [later, "persona de prueba", "2026-11-02T00:00:00Z"],
+  ] as const)
+    await db.query(
+      "insert into lola15.rsvps(id,contact_name,phone,attending,members,status,created_at) values($1,$2,$3,true,$4::jsonb,'approved',$5)",
+      [data.id, name, data.phone, JSON.stringify(data.members), date],
+    );
+  await db.exec(
+    readFileSync("db/migrations/202611040002_review_identity.sql", "utf8"),
+  );
+  const rows = (await db.query<any>("select id,status from lola15.rsvps")).rows;
+  assert.equal(rows.length, 2);
+  assert.equal(rows.find((row) => row.id === earlier.id).status, "superseded");
+  assert.equal(rows.find((row) => row.id === later.id).status, "approved");
+});
+test("storage readiness fails if any RSVP, song, session or limit table is missing", async () => {
+  assert.equal(await storageAvailable(db), true);
+  for (const table of ["rsvps", "songs", "sessions", "rate_limits"]) {
+    await db.exec(`begin;drop table lola15.${table};`);
+    assert.equal(await storageAvailable(db), false);
+    await db.exec("rollback");
+  }
+  assert.equal(await storageAvailable(db), true);
 });

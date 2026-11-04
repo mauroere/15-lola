@@ -5,17 +5,21 @@ import { mealOptions, type Member } from "@/lib/validation";
 function useSubmission(
   action: (value: unknown) => Promise<{ success: boolean; error?: string }>,
 ) {
-  const id = useRef("");
+  const request = useRef<{ id: string; signature: string } | null>(null);
+  const inFlight = useRef(false);
   const [busy, setBusy] = useState(false),
     [success, setSuccess] = useState(false),
     [error, setError] = useState("");
   async function send(value: Record<string, unknown>) {
-    if (busy) return;
+    if (inFlight.current) return;
+    inFlight.current = true;
     setBusy(true);
     setError("");
     try {
-      id.current ||= crypto.randomUUID();
-      const result = await action({ ...value, id: id.current });
+      const signature = JSON.stringify(value);
+      if (request.current?.signature !== signature)
+        request.current = { id: crypto.randomUUID(), signature };
+      const result = await action({ ...value, id: request.current.id });
       if (result.success) setSuccess(true);
       else setError(result.error || "No se pudo guardar. Volvé a intentar.");
     } catch {
@@ -23,10 +27,17 @@ function useSubmission(
         "No se pudo conectar. Tus datos siguen en el formulario; podés reintentar.",
       );
     } finally {
+      inFlight.current = false;
       setBusy(false);
     }
   }
-  return { busy, success, error, send };
+  function reset() {
+    if (inFlight.current) return;
+    request.current = null;
+    setSuccess(false);
+    setError("");
+  }
+  return { busy, success, error, send, reset };
 }
 function MenuFields({
   member,
@@ -76,11 +87,15 @@ export default function GuestForms({ enabled }: { enabled: boolean }) {
   const [contact, setContact] = useState(blankMember),
     [phone, setPhone] = useState(""),
     [attending, setAttending] = useState(true),
+    [contactAttending, setContactAttending] = useState(true),
     [companions, setCompanions] = useState<Member[]>([]),
     [trap, setTrap] = useState("");
   const [songName, setSongName] = useState(""),
     [songTitle, setSongTitle] = useState(""),
     [songTrap, setSongTrap] = useState("");
+  const members = attending
+    ? [...(contactAttending ? [contact] : []), ...companions]
+    : [];
   return (
     <>
       <section
@@ -94,15 +109,45 @@ export default function GuestForms({ enabled }: { enabled: boolean }) {
           <p>
             Me encantaría compartir esta noche con vos.
             <br />
-            Contame quiénes vienen y si necesitan un menú especial.
+            Anotá solo a las personas invitadas en el mensaje que recibiste y su
+            menú.
           </p>
         </div>
         <div className="guest-form-card">
           {rsvp.success ? (
-            <p className="form-success" role="status">
-              Recibimos tu respuesta. Quedó pendiente de revisión por la
-              organización. ¡Gracias por responder!
-            </p>
+            <div className="response-summary">
+              <p className="form-success" role="status">
+                Recibimos tu respuesta. Quedó pendiente de revisión por la
+                organización.
+              </p>
+              <p>
+                <strong>Responde:</strong> {contact.name}
+              </p>
+              <p>
+                <strong>Asistencia:</strong>{" "}
+                {attending
+                  ? `${members.length} ${members.length === 1 ? "persona" : "personas"}`
+                  : "No podremos asistir"}
+              </p>
+              {attending && (
+                <ul>
+                  {members.map((member, index) => (
+                    <li key={index}>
+                      {member.name} ·{" "}
+                      {
+                        mealOptions.find(
+                          (option) => option.value === member.menu,
+                        )?.label
+                      }
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <p>La organización recibe esta respuesta en su panel privado.</p>
+              <button type="button" className="form-link" onClick={rsvp.reset}>
+                Corregir mi respuesta
+              </button>
+            </div>
           ) : (
             <form
               onSubmit={(e) => {
@@ -111,7 +156,7 @@ export default function GuestForms({ enabled }: { enabled: boolean }) {
                   contactName: contact.name,
                   phone,
                   attending,
-                  members: attending ? [contact, ...companions] : [],
+                  members,
                   website: trap,
                 });
               }}
@@ -156,31 +201,61 @@ export default function GuestForms({ enabled }: { enabled: boolean }) {
                   </label>
                 </div>
                 <label htmlFor="rsvp-attendance">
-                  ¿Vas a venir?
+                  ¿Van a venir?
                   <select
                     id="rsvp-attendance"
                     value={attending ? "yes" : "no"}
                     onChange={(e) => setAttending(e.target.value === "yes")}
                   >
-                    <option value="yes">Sí, voy a asistir</option>
-                    <option value="no">No podré asistir</option>
+                    <option value="yes">Sí, confirmamos asistencia</option>
+                    <option value="no">No podremos asistir</option>
                   </select>
                 </label>
                 {attending && (
                   <>
-                    <div className="member-menu">
-                      <h3>Tu menú</h3>
-                      <MenuFields
-                        prefix="guest-main"
-                        member={contact}
-                        onChange={setContact}
+                    <p className="form-privacy">
+                      Podés responder por otras personas aunque no vayas a
+                      asistir.
+                    </p>
+                    <label className="contact-attending">
+                      <input
+                        type="checkbox"
+                        checked={contactAttending}
+                        disabled={!contactAttending && companions.length >= 12}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setContactAttending(checked);
+                          setCompanions((current) =>
+                            checked
+                              ? current.filter(
+                                  (person) =>
+                                    person.name.trim() ||
+                                    person.notes.trim() ||
+                                    person.menu !== "standard",
+                                )
+                              : current.length
+                                ? current
+                                : [blankMember()],
+                          );
+                        }}
                       />
-                    </div>
+                      Yo también voy a asistir
+                    </label>
+                    {contactAttending && (
+                      <div className="member-menu">
+                        <h3>Tu menú</h3>
+                        <MenuFields
+                          prefix="guest-main"
+                          member={contact}
+                          onChange={setContact}
+                        />
+                      </div>
+                    )}
                     {companions.map((member, index) => (
                       <div className="member-menu" key={index}>
-                        <h3>Acompañante {index + 1}</h3>
+                        <h3>Persona invitada {index + 1}</h3>
                         <label htmlFor={`companion-${index}`}>
-                          Nombre y apellido del acompañante {index + 1}
+                          Nombre y apellido de la persona invitada {index + 1}
                           <input
                             id={`companion-${index}`}
                             required
@@ -210,17 +285,20 @@ export default function GuestForms({ enabled }: { enabled: boolean }) {
                         <button
                           className="form-link"
                           type="button"
+                          disabled={
+                            !contactAttending && companions.length === 1
+                          }
                           onClick={() =>
                             setCompanions((current) =>
                               current.filter((_, i) => i !== index),
                             )
                           }
                         >
-                          Quitar acompañante {index + 1}
+                          Quitar persona invitada {index + 1}
                         </button>
                       </div>
                     ))}
-                    {companions.length < 11 && (
+                    {companions.length < (contactAttending ? 11 : 12) && (
                       <button
                         type="button"
                         className="form-link add-person"
@@ -231,7 +309,7 @@ export default function GuestForms({ enabled }: { enabled: boolean }) {
                           ])
                         }
                       >
-                        + Agregar acompañante
+                        + Agregar persona invitada
                       </button>
                     )}
                   </>
@@ -278,9 +356,21 @@ export default function GuestForms({ enabled }: { enabled: boolean }) {
         </div>
         <div className="song-form-card">
           {song.success ? (
-            <p className="form-success" role="status">
-              ¡Gracias por tu sugerencia! Ya quedó guardada para la fiesta.
-            </p>
+            <div>
+              <p className="form-success" role="status">
+                ¡Gracias por tu sugerencia! Ya quedó guardada para la fiesta.
+              </p>
+              <button
+                type="button"
+                className="form-link"
+                onClick={() => {
+                  setSongTitle("");
+                  song.reset();
+                }}
+              >
+                Sugerir otra canción
+              </button>
+            </div>
           ) : (
             <form
               onSubmit={(e) => {

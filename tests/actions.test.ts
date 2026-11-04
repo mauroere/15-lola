@@ -30,7 +30,7 @@ before(async () => {
               args.path === "server-only"
                 ? ""
                 : args.path === "next/cache"
-                  ? "export const revalidatePath=()=>{};"
+                  ? "export const revalidatePath=()=>{if(globalThis.__lolaActionFixture.failRefresh)throw Error('fixture refresh failure');};"
                   : args.path === "next/headers"
                     ? `export async function headers(){return new Map([['x-forwarded-for','127.0.0.1']]);}export async function cookies(){const s=globalThis.__lolaActionFixture;return {get:k=>s.cookies.get(k),set:(k,value,options)=>s.cookies.set(k,{value,options}),delete:k=>s.cookies.delete(k)};}`
                     : `
@@ -133,4 +133,19 @@ test("bad RSVP data and offline storage never pretend to be saved", async () => 
   state().failWrite = true;
   assert.equal((await actions.submitRSVP(input)).success, false);
   assert(state().calls.some((call: any) => call.sql === "rollback"));
+});
+
+test("cache refresh failures after commit do not turn a successful RSVP into a failed write", async (t) => {
+  t.mock.method(console, "error", () => {});
+  state().failRefresh = true;
+  const input = {
+    id: randomUUID(),
+    contactName: "Persona guardada",
+    phone: "1131545678",
+    attending: true,
+    members: [{ name: "Persona guardada", menu: "standard", notes: "" }],
+    website: "",
+  };
+  assert.equal((await actions.submitRSVP(input)).success, true);
+  assert(state().calls.some((call: any) => call.sql === "commit"));
 });

@@ -29,10 +29,39 @@ export async function saveGuestRequest(
       kind + input.id,
     ]);
     const table = kind === "rsvp" ? "lola15.rsvps" : "lola15.songs";
-    const existing = await client.query(`select id from ${table} where id=$1`, [
+    const existing = await client.query(`select * from ${table} where id=$1`, [
       input.id,
     ]);
     if (existing.rows.length) {
+      const row = existing.rows[0];
+      const previous =
+        kind === "rsvp"
+          ? [
+              row.contact_name,
+              row.phone,
+              row.attending,
+              row.members.map((member: RSVPInput["members"][number]) => [
+                member.name,
+                member.menu,
+                member.notes,
+              ]),
+            ]
+          : [row.name, row.song];
+      const current =
+        kind === "rsvp"
+          ? [
+              (input as RSVPInput).contactName,
+              (input as RSVPInput).phone,
+              (input as RSVPInput).attending,
+              (input as RSVPInput).members.map((member) => [
+                member.name,
+                member.menu,
+                member.notes,
+              ]),
+            ]
+          : [(input as SongInput).name, (input as SongInput).song];
+      if (JSON.stringify(previous) !== JSON.stringify(current))
+        throw Error("IDEMPOTENCY_CONFLICT");
       await client.query("commit");
       return;
     }
@@ -72,22 +101,38 @@ export async function reviewGuestRequest(
   client: SQLClient,
   id: string,
   status: "approved" | "rejected",
+  expectedStatus?: "pending" | "approved" | "rejected",
 ) {
   await client.query("begin");
   try {
-    const { rows } = await client.query(
-      "select phone,lower(btrim(contact_name)) as name from lola15.rsvps where id=$1",
+    const initial = await client.query(
+      "select phone,lower(regexp_replace(btrim(contact_name),'[[:space:]]+',' ','g')) as name from lola15.rsvps where id=$1",
       [id],
     );
-    if (!rows.length) throw Error("NOT_FOUND");
+    if (!initial.rows.length) throw Error("NOT_FOUND");
     await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))", [
-      "review:" + rows[0].phone + ":" + rows[0].name,
+      "review:" + initial.rows[0].phone + ":" + initial.rows[0].name,
     ]);
-    if (status === "approved")
-      await client.query(
-        "update lola15.rsvps set status='superseded',reviewed_at=now() where phone=$1 and lower(btrim(contact_name))=$2 and status='approved' and id<>$3",
-        [rows[0].phone, rows[0].name, id],
+    const { rows } = await client.query(
+      "select id,status,created_at from lola15.rsvps where id=$1 for update",
+      [id],
+    );
+    const target = rows[0];
+    if (!target) throw Error("NOT_FOUND");
+    if (target.status === "superseded") throw Error("OBSOLETE_RESPONSE");
+    if (expectedStatus && target.status !== expectedStatus)
+      throw Error("STALE_REVIEW");
+    if (status === "approved") {
+      const newer = await client.query(
+        "select id from lola15.rsvps where phone=$1 and lower(regexp_replace(btrim(contact_name),'[[:space:]]+',' ','g'))=$2 and (created_at,id)>($3::timestamptz,$4::uuid) and status in ('pending','approved') limit 1",
+        [initial.rows[0].phone, initial.rows[0].name, target.created_at, id],
       );
+      if (newer.rows.length) throw Error("NEWER_RESPONSE");
+      await client.query(
+        "update lola15.rsvps set status='superseded',reviewed_at=now() where phone=$1 and lower(regexp_replace(btrim(contact_name),'[[:space:]]+',' ','g'))=$2 and status='approved' and id<>$3",
+        [initial.rows[0].phone, initial.rows[0].name, id],
+      );
+    }
     await client.query(
       "update lola15.rsvps set status=$2,reviewed_at=now() where id=$1",
       [id, status],
@@ -96,5 +141,16 @@ export async function reviewGuestRequest(
   } catch (error) {
     await client.query("rollback");
     throw error;
+  }
+}
+
+export async function storageAvailable(client: SQLClient) {
+  try {
+    await client.query(
+      "select r.id,s.id,se.token_hash,rl.key from lola15.rsvps r cross join lola15.songs s cross join lola15.sessions se cross join lola15.rate_limits rl limit 0",
+    );
+    return true;
+  } catch {
+    return false;
   }
 }

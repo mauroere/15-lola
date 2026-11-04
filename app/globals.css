@@ -1843,3 +1843,60 @@ fieldset:disabled textarea {
     gap: 6px;
   }
 }
+.guest-form-card label.contact-attending {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+}
+.contact-attending input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0;
+  accent-color: var(--wine);
+}
+.response-summary p,
+.response-summary li {
+  font: 17px/1.6 var(--serif);
+  margin-bottom: 12px;
+  overflow-wrap: anywhere;
+}
+.response-summary ul {
+  padding-left: 22px;
+}
+.response-summary .form-link {
+  margin-top: 10px;
+}
+.admin-tools {
+  margin: 20px 0 28px;
+}
+.admin-response .response-time {
+  font: 10px/1.5 var(--sans);
+  color: var(--muted);
+}
+.admin-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+  font: 11px var(--sans);
+}
+.admin-pagination button {
+  background: var(--paper-light);
+  border: 1px solid var(--line);
+  padding: 9px 14px;
+  color: var(--wine);
+  font: inherit;
+}
+.admin-response .review-warning {
+  font: 11px/1.6 var(--sans);
+  padding: 12px 14px;
+  background: #e7d5c7;
+  border-left: 2px solid var(--wine);
+  color: var(--ink);
+}
