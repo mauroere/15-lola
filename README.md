@@ -65,7 +65,7 @@ PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run check:music
 
 `check:forms` inicia una base PGlite aislada y renderiza los componentes reales con un adaptador local de las acciones: guardado y revisión, menús por persona, reintentos, errores, sugerencias, accesibilidad y reproducción de un audio sintético. No usa cuentas, invitados, mensajes ni archivos de música reales. El puerto 3041 se cierra al terminar.
 
-`check:music` usa el MP3 real en la aplicación Next para comprobar inicio en 0:45, autoplay permitido/bloqueado, pausa, reanudación y acceso por rangos.
+`check:music` usa el MP3 real en la aplicación Next y observaciones CDP con `userGesture:false` para no desbloquear audio artificialmente durante la prueba. Comprueba autoplay permitido, bloqueo inicial y con scroll en perfiles restrictivos, primer mouse/toque en emulación Android, inicio en 0:45, pausa, reanudación y acceso por rangos. No equivale a una prueba en un teléfono físico ni dentro de WhatsApp.
 
 `npm test` prueba las acciones reales con servicios de Next/base aislados, permisos administrativos, sesiones, errores, transacciones PostgreSQL, validación, límites, doble envío, reemplazo de respuestas y calendario.
 

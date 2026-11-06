@@ -19,6 +19,7 @@ export default function BackgroundMusic({
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [blocked, setBlocked] = useState(false);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -33,6 +34,7 @@ export default function BackgroundMusic({
     setPlaying(false);
     setLoading(false);
     setError("");
+    setBlocked(false);
     // Before metadata, setting currentTime queues the initial playback position.
     // Retry at loadedmetadata for browsers that require a known seekable range.
     const position = () => {
@@ -46,8 +48,9 @@ export default function BackgroundMusic({
         }
       }
     };
-    const start = (retry = false) => {
-      if (!active || pending) return;
+    const start = (retry = false, fromGesture = false) => {
+      // A valid touch must be able to retry a still-pending automatic request.
+      if (!active || (pending && (!fromGesture || !audio.paused))) return;
       pending = true;
       const id = ++request;
       if (retry && audio.error) audio.load();
@@ -60,6 +63,7 @@ export default function BackgroundMusic({
         .then(() => {
           if (!active || id !== request) return;
           pending = false;
+          setBlocked(false);
           started = true;
           automatic = false;
           setPlaying(true);
@@ -71,12 +75,16 @@ export default function BackgroundMusic({
           setPlaying(false);
           setLoading(false);
           if (
-            cause instanceof DOMException &&
+            cause &&
+            typeof cause === "object" &&
+            "name" in cause &&
             cause.name === "NotAllowedError"
           ) {
             // Normal browser policy: wait for a click/tap/key, without an error alert.
             automatic = true;
+            setBlocked(true);
           } else {
+            setBlocked(false);
             automatic = false;
             setError(playbackError);
           }
@@ -91,10 +99,21 @@ export default function BackgroundMusic({
         return;
       if (
         event instanceof KeyboardEvent &&
-        (event.repeat || !["Enter", " "].includes(event.key))
+        (event.repeat ||
+          event.altKey ||
+          event.ctrlKey ||
+          event.metaKey ||
+          ["Escape", "Shift", "Control", "Alt", "Meta"].includes(event.key))
       )
         return;
-      start();
+      if (
+        typeof PointerEvent !== "undefined" &&
+        event instanceof PointerEvent &&
+        ((event.type === "pointerdown" && event.pointerType !== "mouse") ||
+          (event.type === "pointerup" && event.pointerType === "mouse"))
+      )
+        return;
+      start(false, true);
     };
     const scroll = (event: Event) => {
       if (!automatic || !event.isTrusted || scrollAttempted || pending) return;
@@ -107,6 +126,7 @@ export default function BackgroundMusic({
       automatic = false;
       setPlaying(false);
       setLoading(false);
+      setBlocked(false);
       setError(playbackError);
     };
     const pause = () => {
@@ -117,6 +137,7 @@ export default function BackgroundMusic({
       pending = false;
       request++;
       automatic = false;
+      setBlocked(false);
       audio.pause();
       setPlaying(false);
       setLoading(false);
@@ -125,6 +146,9 @@ export default function BackgroundMusic({
     audio.addEventListener("error", fail);
     audio.addEventListener("pause", pause);
     window.addEventListener("scroll", scroll, { passive: true });
+    document.addEventListener("pointerdown", gesture, true);
+    document.addEventListener("pointerup", gesture, true);
+    document.addEventListener("touchend", gesture, true);
     document.addEventListener("click", gesture, true);
     document.addEventListener("keydown", gesture, true);
     start();
@@ -136,6 +160,9 @@ export default function BackgroundMusic({
       audio.removeEventListener("error", fail);
       audio.removeEventListener("pause", pause);
       window.removeEventListener("scroll", scroll);
+      document.removeEventListener("pointerdown", gesture, true);
+      document.removeEventListener("pointerup", gesture, true);
+      document.removeEventListener("touchend", gesture, true);
       document.removeEventListener("click", gesture, true);
       document.removeEventListener("keydown", gesture, true);
       audio.pause();
@@ -149,7 +176,9 @@ export default function BackgroundMusic({
       ? "Pausar música"
       : error
         ? "Reintentar música"
-        : "Escuchar música";
+        : blocked
+          ? "Activar música"
+          : "Escuchar música";
   return (
     <aside className="background-music" aria-label="Música de fondo">
       <audio
@@ -180,6 +209,11 @@ export default function BackgroundMusic({
           <span>{action}</span> <small>{title}</small>
         </span>
       </button>
+      {blocked && !loading && (
+        <p className="music-policy" role="status">
+          Tu navegador necesita un toque para activar el sonido.
+        </p>
+      )}
       {error && <p role="alert">{error}</p>}
     </aside>
   );
