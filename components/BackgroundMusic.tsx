@@ -26,7 +26,9 @@ export default function BackgroundMusic({
     let active = true,
       request = 0,
       started = false,
-      automatic = true;
+      automatic = true,
+      pending = false,
+      scrollAttempted = false;
     audio.volume = 0.25;
     setPlaying(false);
     setLoading(false);
@@ -45,7 +47,8 @@ export default function BackgroundMusic({
       }
     };
     const start = (retry = false) => {
-      if (!active) return;
+      if (!active || pending) return;
+      pending = true;
       const id = ++request;
       if (retry && audio.error) audio.load();
       position();
@@ -56,6 +59,7 @@ export default function BackgroundMusic({
         .play()
         .then(() => {
           if (!active || id !== request) return;
+          pending = false;
           started = true;
           automatic = false;
           setPlaying(true);
@@ -63,6 +67,7 @@ export default function BackgroundMusic({
         })
         .catch((cause: unknown) => {
           if (!active || id !== request) return;
+          pending = false;
           setPlaying(false);
           setLoading(false);
           if (
@@ -91,7 +96,13 @@ export default function BackgroundMusic({
         return;
       start();
     };
+    const scroll = (event: Event) => {
+      if (!automatic || !event.isTrusted || scrollAttempted || pending) return;
+      scrollAttempted = true;
+      start();
+    };
     const fail = () => {
+      pending = false;
       request++;
       automatic = false;
       setPlaying(false);
@@ -103,6 +114,7 @@ export default function BackgroundMusic({
     };
     startRef.current = start;
     cancelRef.current = () => {
+      pending = false;
       request++;
       automatic = false;
       audio.pause();
@@ -112,6 +124,7 @@ export default function BackgroundMusic({
     audio.addEventListener("loadedmetadata", position);
     audio.addEventListener("error", fail);
     audio.addEventListener("pause", pause);
+    window.addEventListener("scroll", scroll, { passive: true });
     document.addEventListener("click", gesture, true);
     document.addEventListener("keydown", gesture, true);
     start();
@@ -122,6 +135,7 @@ export default function BackgroundMusic({
       audio.removeEventListener("loadedmetadata", position);
       audio.removeEventListener("error", fail);
       audio.removeEventListener("pause", pause);
+      window.removeEventListener("scroll", scroll);
       document.removeEventListener("click", gesture, true);
       document.removeEventListener("keydown", gesture, true);
       audio.pause();

@@ -13,7 +13,7 @@ La portada invita a la fiesta y presenta fecha, horario y salón; no funciona co
 - Sugerencias de canción y artista, guardadas en la base y consultables en el panel; se pueden enviar varias canciones.
 - Validación del servidor, cupos de frecuencia y protección contra doble envío mediante UUID. Los errores conservan los formularios; no se informa éxito si falla la escritura.
 - Calendario con inicio a las **21:00 de Argentina (00:00 UTC del 8/2)**, sin inventar una hora de finalización. Enlace discreto a Google Maps y compartir/copiar la invitación.
-- Música de fondo **thank u, next — Ariana Grande**, con el MP3 aportado por el usuario en `public/audio/thank-u-next.mp3`. Arranca desde el **segundo 45**. Volumen inicial 25%, repetición, pausa y reintento. Intenta autoplay; si el navegador lo bloquea, usa el primer clic/toque o Enter/Espacio. Una pausa manual se respeta.
+- Música de fondo **thank u, next — Ariana Grande**, con el MP3 aportado por el usuario en `public/audio/thank-u-next.mp3`. Arranca desde el **segundo 45**. Volumen inicial 25%, repetición, pausa y reintento. Intenta autoplay; si el navegador lo bloquea, intenta nuevamente al primer scroll y usa el primer clic/toque o Enter/Espacio. Desplazarse no garantiza permiso de sonido en todos los navegadores. Una pausa manual se respeta.
 
 Los datos están en `lib/event.ts`. No hay invitados, claves, fotos, audio ni conexiones provenientes de Barbi o Luz.
 
@@ -24,10 +24,10 @@ Por decisión del usuario, **la base se conectará después**. Mientras falte la
 ### Configurar la base de Lola en Vercel
 
 1. Conectar una base **propia de Lola**, Supabase o Neon, al proyecto `15-lola`. No usar las conexiones de Barbi o Luz.
-2. La integración debe inyectar `DATABASE_URL` o `POSTGRES_URL`. El migrador prefiere `POSTGRES_URL_NON_POOLING` cuando exista; las escrituras del servidor usan la conexión normal. Los valores se cargan en el gestor seguro de Vercel, nunca en Git o en el chat.
+2. La integración debe inyectar `DATABASE_URL` o `POSTGRES_URL`. El migrador prefiere `POSTGRES_URL_NON_POOLING` cuando exista; las escrituras del servidor usan la conexión normal y aceptan la conexión no agrupada como respaldo. Las URLs deben empezar con `postgres://` o `postgresql://`, sin barras invertidas delante de los dos puntos. Los valores se cargan en el gestor seguro de Vercel, nunca en Git o en el chat.
 3. Crear `ADMIN_PASSWORD` para el panel: entre 12 y 256 caracteres. No hay contraseña predeterminada ni heredada de otra invitación.
-4. Volver a desplegar. `npm run build` aplica las migraciones versionadas y verifica sus checksums antes de compilar. Si hay conexión y falla una migración, el build falla para conservar el despliegue anterior. Si no hay conexión, se compila la landing con los envíos deshabilitados.
-5. Comprobar `/api/health` (HTTP 200) y entrar a `/dashboard`.
+4. Volver a desplegar. `vercel.json` fuerza `npm run build`, incluso si antes se usaba directamente `next build`. `npm run build` aplica las migraciones versionadas y verifica sus checksums antes de compilar. Si hay conexión y falla una migración, el build falla para conservar el despliegue anterior. Si no hay conexión, se compila la landing con los envíos deshabilitados.
+5. Comprobar [el estado de la invitación](https://los15delola.vercel.app/api/health) (HTTP 200) y entrar a `/dashboard`. `databaseConfigured` indica si Vercel recibió una conexión PostgreSQL; `storageReady` verifica las cuatro tablas; `adminConfigured` indica si la contraseña cumple los requisitos. El código de diagnóstico es público y no incluye claves ni datos personales.
 
 Se utiliza el esquema privado `lola15` con RLS y permisos cerrados a visitantes. No requiere claves públicas de Supabase. La conexión TLS verifica certificados y hostname; acepta las CA públicas oficiales de Supabase y las raíces del sistema. Los certificados de `scripts/certs` no son claves privadas. Los tests usan PostgreSQL embebido y credenciales ficticias.
 
@@ -35,7 +35,7 @@ Las sesiones administrativas son aleatorias, guardan su hash en la base, vencen 
 
 ### Música de fondo
 
-El MP3 aportado el 6/11/2026 ya está incluido como recurso estático. Se activa automáticamente sin variables ni base de datos y comienza en 0:45. El inicio automático depende de la política del navegador: cuando exige una interacción, el primer toque/clic inicia también desde 0:45. Pausar y reanudar conserva la posición. `NEXT_PUBLIC_BACKGROUND_MUSIC_URL` permite reemplazar la fuente por una URL HTTPS o una ruta local si más adelante se decide cambiar de archivo.
+El MP3 aportado el 6/11/2026 ya está incluido como recurso estático. Se activa automáticamente sin variables ni base de datos y comienza en 0:45. El inicio automático depende de la política del navegador: se intenta al entrar, otra vez al primer scroll y al primer toque/clic válido, siempre desde 0:45. Un scroll puede seguir bloqueado por el navegador; el clic/toque mantiene la alternativa más confiable. Pausar y reanudar conserva la posición. `NEXT_PUBLIC_BACKGROUND_MUSIC_URL` permite reemplazar la fuente por una URL HTTPS o una ruta local si más adelante se decide cambiar de archivo.
 
 ## Logotipo
 

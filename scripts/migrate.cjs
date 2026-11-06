@@ -55,9 +55,20 @@ async function main() {
     await client.end().catch(() => {});
   }
 }
-main().catch(() => {
+main().catch((error) => {
+  const known = [
+    "DATABASE_NOT_CONFIGURED",
+    "INVALID_DATABASE_URL",
+    "MIGRATION_CHECKSUM_MISMATCH",
+  ];
+  const code = known.includes(error?.message)
+    ? error.message
+    : typeof error?.code === "string" && /^[A-Z0-9_]{2,50}$/.test(error.code)
+      ? error.code
+      : "MIGRATION_FAILED";
   console.error(
-    "Migration failed; deployment stopped. Verify the Lola database binding and TLS configuration.",
+    "Lola database migration failed; deployment stopped. Code:",
+    code,
   );
   process.exitCode = 1;
 });

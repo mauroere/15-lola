@@ -16,6 +16,12 @@ async function verify(autoplayAllowed) {
     });
     await context.addInitScript(() => {
       window.musicStarts = [];
+      window.musicAttempts = 0;
+      const originalPlay = HTMLMediaElement.prototype.play;
+      HTMLMediaElement.prototype.play = function () {
+        window.musicAttempts++;
+        return originalPlay.call(this);
+      };
       document.addEventListener(
         "playing",
         (event) => {
@@ -34,7 +40,13 @@ async function verify(autoplayAllowed) {
         page.getByRole("button", { name: /Escuchar música/ }),
       ).toBeVisible();
       assert.equal(await audio.evaluate((element) => element.paused), true);
-      await page.getByRole("heading", { name: "Lola", exact: true }).click();
+      const attemptsBefore = await page.evaluate(() => window.musicAttempts);
+      await page.mouse.wheel(0, 300);
+      await expect
+        .poll(() => page.evaluate(() => window.musicAttempts))
+        .toBeGreaterThan(attemptsBefore);
+      if (await audio.evaluate((element) => element.paused))
+        await page.getByRole("heading", { name: "Lola", exact: true }).click();
     }
     await expect(
       page.getByRole("button", { name: /Pausar música/ }),

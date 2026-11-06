@@ -144,11 +144,14 @@ export async function reviewGuestRequest(
   }
 }
 
+export async function probeStorage(client: SQLClient) {
+  await client.query(
+    "select r.id,s.id,se.token_hash,rl.key from lola15.rsvps r cross join lola15.songs s cross join lola15.sessions se cross join lola15.rate_limits rl limit 0",
+  );
+}
 export async function storageAvailable(client: SQLClient) {
   try {
-    await client.query(
-      "select r.id,s.id,se.token_hash,rl.key from lola15.rsvps r cross join lola15.songs s cross join lola15.sessions se cross join lola15.rate_limits rl limit 0",
-    );
+    await probeStorage(client);
     return true;
   } catch {
     return false;
