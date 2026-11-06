@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginAdmin, logoutAdmin, reviewRSVP } from "@/app/actions";
 import { mealOptions, type Member } from "@/lib/validation";
-import { approvedPeople, attendanceCsv } from "@/lib/attendance";
+import { approvedPeople } from "@/lib/attendance";
+import { attendanceWorkbook } from "@/lib/attendance-workbook";
 import { nameKey, searchKey } from "@/lib/identity";
 import BrandLogo from "./BrandLogo";
 export type AdminRSVP = {
@@ -132,14 +133,14 @@ export default function AdminPanel({
     currentPage = Math.min(page, pages - 1);
   const songPages = Math.max(1, Math.ceil(songs.length / 25)),
     currentSongPage = Math.min(songPage, songPages - 1);
-  function exportList() {
+  async function exportList() {
     try {
       const url = URL.createObjectURL(
-          new Blob([attendanceCsv(rsvps)], { type: "text/csv;charset=utf-8" }),
+          await attendanceWorkbook(rsvps),
         ),
         a = document.createElement("a");
       a.href = url;
-      a.download = "lola-asistentes-y-menus.csv";
+      a.download = "lola-asistentes-y-menus.xlsx";
       document.body.append(a);
       a.click();
       a.remove();

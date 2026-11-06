@@ -4,6 +4,7 @@ import { readFile, readdir, mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import assert from "node:assert/strict";
+import { unzipSync, strFromU8 } from "fflate";
 import { build } from "esbuild";
 import { chromium, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
@@ -209,7 +210,11 @@ try {
     .getByRole("button", { name: "Descargar asistentes y menús", exact: true })
     .click();
   const exportFile = await downloaded;
-  const exported = await readFile((await exportFile.path())!, "utf8");
+  assert.equal(exportFile.suggestedFilename(), "lola-asistentes-y-menus.xlsx");
+  const workbook = unzipSync(await readFile((await exportFile.path())!));
+  const exported = strFromU8(workbook["xl/sharedStrings.xml"]);
+  assert(exported.includes("Menú"));
+  assert(exported.includes("Respondió"));
   assert(exported.includes("Persona aislada"));
   assert(exported.includes("Acompañante local"));
   assert(exported.includes("Sin TACC"));

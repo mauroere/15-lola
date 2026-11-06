@@ -23,7 +23,7 @@ export function csvCell(value: string) {
   const safe = /^[\s]*[=+\-@]/u.test(value) ? `'${value}` : value;
   return `"${safe.replaceAll('"', '""')}"`;
 }
-export function attendanceCsv(rows: ResponseRecord[]) {
+export function attendanceRows(rows: ResponseRecord[]): string[][] {
   const labels: Record<string, string> = {
     standard: "Sin restricciones",
     gluten_free: "Sin TACC",
@@ -31,18 +31,20 @@ export function attendanceCsv(rows: ResponseRecord[]) {
     vegan: "Vegano",
     other: "Otra necesidad",
   };
+  return [
+    ["Persona", "Menú", "Necesidades alimentarias", "Respondió", "WhatsApp"],
+    ...approvedPeople(rows).map((person) => [
+      person.name,
+      labels[person.menu],
+      person.notes,
+      person.contact,
+      person.phone,
+    ]),
+  ];
+}
+export function attendanceCsv(rows: ResponseRecord[]) {
   return (
-    "\uFEFF" +
-    [
-      ["Persona", "Menú", "Necesidades alimentarias", "Respondió", "WhatsApp"],
-      ...approvedPeople(rows).map((person) => [
-        person.name,
-        labels[person.menu],
-        person.notes,
-        person.contact,
-        person.phone,
-      ]),
-    ]
+    "\uFEFF" + attendanceRows(rows)
       .map((row) => row.map(csvCell).join(";"))
       .join("\r\n")
   );
