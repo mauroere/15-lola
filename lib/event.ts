@@ -10,5 +10,6 @@ export const event = {
   mapsUrl: "https://maps.app.goo.gl/f5aZKBZheer29YDGA?g_st=ac" as string | null,
   dressCode: "Elegante",
   reservedColors: ["Bordó", "Plateado", "Blanco"],
+  giftAlias: "lola.konig",
   timeZone: "America/Argentina/Buenos_Aires",
 };

@@ -561,6 +561,58 @@ h2 em {
   font: italic 16px var(--serif);
   color: var(--muted);
 }
+.gift-section {
+  padding: 75px 24px;
+  background: linear-gradient(130deg, #ead0ca, var(--paper) 60%, #f0dbd2);
+}
+.gift-card {
+  max-width: 740px;
+  margin: auto;
+  padding: clamp(28px, 5vw, 55px) 24px 12px;
+  border: 1px solid var(--silver);
+  outline: 1px solid #aaa49d55;
+  outline-offset: -7px;
+  text-align: center;
+  background: var(--paper-light);
+}
+.gift-card > svg {
+  width: min(200px, 75%);
+  margin: 0 auto 25px;
+  color: var(--muted);
+}
+.gift-card .chapter {
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  margin-bottom: 20px;
+}
+.gift-card h2 {
+  color: var(--wine);
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.15;
+}
+.gift-message {
+  max-width: 400px;
+  margin: 20px auto 30px;
+  font-size: 19px;
+  line-height: 1.55;
+}
+.gift-card .eyebrow {
+  font-size: 8px;
+  letter-spacing: 1.3px;
+}
+.gift-alias {
+  margin: 14px 0 22px;
+  font: 500 clamp(22px, 4vw, 28px)/1.5 var(--sans);
+  color: var(--wine);
+  user-select: all;
+  overflow-wrap: anywhere;
+}
+.gift-status {
+  min-height: 45px;
+  padding-top: 14px;
+  font: 11px/1.6 var(--sans);
+  color: var(--wine);
+}
 .closing {
   padding: 85px 24px 60px;
   text-align: center;

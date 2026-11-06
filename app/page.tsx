@@ -11,6 +11,7 @@ import GuestForms from "@/components/GuestForms";
 import BackgroundMusic from "@/components/BackgroundMusic";
 import { storageReady } from "@/lib/database";
 import ShareButton from "@/components/ShareButton";
+import Gifts from "@/components/Gifts";
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
@@ -280,6 +281,7 @@ export default async function Page() {
           </div>
         </section>
         <GuestForms enabled={await storageReady()} />
+        <Gifts />
         <section className="closing">
           <img
             className="closing-flowers"
