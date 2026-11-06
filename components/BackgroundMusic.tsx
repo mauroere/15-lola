@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const START_AT = 0;
+const START_AT = 45;
 const playbackError =
   "No se pudo reproducir la música. Podés volver a intentar.";
 

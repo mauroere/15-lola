@@ -73,7 +73,7 @@ const server = createServer(async (req, res) => {
       });
     if (route === "/__audio.wav") {
       const rate = 8000,
-        length = rate * 2,
+        length = rate * 60,
         wav = Buffer.alloc(44 + length * 2);
       wav.write("RIFF");
       wav.writeUInt32LE(wav.length - 8, 4);

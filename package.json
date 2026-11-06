@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "check:browser": "node scripts/check-browser.mjs",
     "test": "tsx --test tests/*.test.ts",
-    "check:forms": "tsx tests/check-forms.mts"
+    "check:forms": "tsx tests/check-forms.mts",
+    "check:music": "node scripts/check-music.mjs"
   },
   "dependencies": {
     "@fontsource/cinzel-decorative": "^5.2.0",

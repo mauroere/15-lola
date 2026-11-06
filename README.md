@@ -13,9 +13,9 @@ La portada invita a la fiesta y presenta fecha, horario y salón; no funciona co
 - Sugerencias de canción y artista, guardadas en la base y consultables en el panel; se pueden enviar varias canciones.
 - Validación del servidor, cupos de frecuencia y protección contra doble envío mediante UUID. Los errores conservan los formularios; no se informa éxito si falla la escritura.
 - Calendario con inicio a las **21:00 de Argentina (00:00 UTC del 8/2)**, sin inventar una hora de finalización. Enlace discreto a Google Maps y compartir/copiar la invitación.
-- Reproductor preparado para **thank u, next — Ariana Grande**, desde el comienzo. Volumen inicial 25%, repetición, pausa y reintento. Intenta autoplay; si el navegador lo bloquea, usa el primer clic/toque o Enter/Espacio. Una pausa manual se respeta. **Falta el archivo de audio o una URL HTTPS directa al archivo**; el título y un enlace a Spotify no contienen audio para el reproductor.
+- Música de fondo **thank u, next — Ariana Grande**, con el MP3 aportado por el usuario en `public/audio/thank-u-next.mp3`. Arranca desde el **segundo 45**. Volumen inicial 25%, repetición, pausa y reintento. Intenta autoplay; si el navegador lo bloquea, usa el primer clic/toque o Enter/Espacio. Una pausa manual se respeta.
 
-Los datos están en `lib/event.ts`. No hay invitados, claves, fotos, audio ni conexiones de Barbi o Luz.
+Los datos están en `lib/event.ts`. No hay invitados, claves, fotos, audio ni conexiones provenientes de Barbi o Luz.
 
 ## Estado de la conexión
 
@@ -33,9 +33,9 @@ Se utiliza el esquema privado `lola15` con RLS y permisos cerrados a visitantes.
 
 Las sesiones administrativas son aleatorias, guardan su hash en la base, vencen a las ocho horas, usan cookies HttpOnly y se revocan al salir o cambiar la contraseña. No se incluyen contraseñas en cookies ni respuestas públicas.
 
-### Incorporar la canción
+### Música de fondo
 
-Cargar el archivo proporcionado por la familia en `public/audio/` o en su almacenamiento de medios. Configurar `NEXT_PUBLIC_BACKGROUND_MUSIC_URL` con una URL HTTPS directa o con una ruta `/audio/…` del proyecto y desplegar. Sin archivo/URL, el control de música se oculta. No se descarga ni sustituye la canción por otra.
+El MP3 aportado el 6/11/2026 ya está incluido como recurso estático. Se activa automáticamente sin variables ni base de datos y comienza en 0:45. El inicio automático depende de la política del navegador: cuando exige una interacción, el primer toque/clic inicia también desde 0:45. Pausar y reanudar conserva la posición. `NEXT_PUBLIC_BACKGROUND_MUSIC_URL` permite reemplazar la fuente por una URL HTTPS o una ruta local si más adelante se decide cambiar de archivo.
 
 ## Logotipo
 
@@ -58,11 +58,14 @@ Con Chromium del sistema:
 ```sh
 PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run check:browser
 PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run check:forms
+PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run check:music
 ```
 
 `check:browser` revisa la aplicación real sin base: cuatro anchos, imágenes, acceso al menú/formularios, envío deshabilitado, ubicación, calendario, compartir y accesibilidad. Puede usarse `INVITATION_TEST_URL` si el servidor usa otro puerto.
 
 `check:forms` inicia una base PGlite aislada y renderiza los componentes reales con un adaptador local de las acciones: guardado y revisión, menús por persona, reintentos, errores, sugerencias, accesibilidad y reproducción de un audio sintético. No usa cuentas, invitados, mensajes ni archivos de música reales. El puerto 3041 se cierra al terminar.
+
+`check:music` usa el MP3 real en la aplicación Next para comprobar inicio en 0:45, autoplay permitido/bloqueado, pausa, reanudación y acceso por rangos.
 
 `npm test` prueba las acciones reales con servicios de Next/base aislados, permisos administrativos, sesiones, errores, transacciones PostgreSQL, validación, límites, doble envío, reemplazo de respuestas y calendario.
 

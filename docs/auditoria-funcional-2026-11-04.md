@@ -47,3 +47,7 @@ La migración `202611040002_review_identity.sql` conserva las respuestas anterio
 3. Incorporar el archivo de **thank u, next — Ariana Grande**, o una URL HTTPS directa al audio, y configurar el reproductor. Sin fuente de audio el control se oculta. El navegador puede requerir un primer toque para permitir sonido.
 
 La validación se realizó en entornos locales aislados. No se verificaron escrituras de producción, no se usaron conexiones de Barbi/Luz y no se enviaron mensajes a invitados.
+
+## Actualización del 6/11/2026
+
+El usuario entregó el MP3 de **thank u, next**. Está incluido en `public/audio/thank-u-next.mp3` y comienza desde el segundo **45**, con pausa/reanudación y primer toque cuando el navegador bloquea autoplay. El pendiente de audio del informe original queda resuelto.

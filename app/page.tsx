@@ -297,7 +297,10 @@ export default async function Page() {
           <ShareButton />
         </section>
         <BackgroundMusic
-          src={process.env.NEXT_PUBLIC_BACKGROUND_MUSIC_URL || ""}
+          src={
+            process.env.NEXT_PUBLIC_BACKGROUND_MUSIC_URL ||
+            "/audio/thank-u-next.mp3"
+          }
           title="thank u, next — Ariana Grande"
         />
       </main>
